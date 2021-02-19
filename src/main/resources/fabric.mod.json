@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "example-addon",
+  "version": "${version}",
+
+  "name": "Example Addon",
+  "description": "An addon template for the Meteor Client API.",
+  "authors": [
+    "seasnail8169"
+  ],
+  "contact": {
+    "issues": "https://github.com/MeteorDevelopment/meteor-addon-template/issues",
+    "sources": "https://github.com/MeteorDevelopment/meteor-addon-template/",
+    "discord": "https://meteorclient.com/discord"
+  },
+
+  "license": "GPL-3.0",
+  "icon": "assets/example-addon/icon.png",
+
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "meteordevelopment.exampleaddon.ExampleAddon"
+    ]
+  },
+  "mixins": [
+    "example-addon.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x",
+    "meteor-client": "*"
+  }
+}
