@@ -1,6 +1,6 @@
 # Meteor Addon Template
 
-A template to allow easy usage of the Meteor Client API.
+A template to allow easy usage of the Meteor Addon API.
 
 ### How to use:  
 - Clone this project

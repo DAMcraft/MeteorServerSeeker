@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Example Addon",
-  "description": "An addon template for the Meteor Client API.",
+  "description": "An addon template for the Meteor Addon API.",
   "authors": [
     "seasnail8169"
   ],
@@ -15,18 +15,17 @@
   },
 
   "license": "GPL-3.0",
-  "icon": "assets/example-addon/icon.png",
+  "icon": "assets/example/icon.png",
 
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "meteordevelopment.exampleaddon.ExampleAddon"
+      "meteordevelopment.addons.example.ExampleAddon"
     ]
   },
   "mixins": [
-    "example-addon.mixins.json"
+    "example.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
