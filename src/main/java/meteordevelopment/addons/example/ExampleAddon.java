@@ -3,8 +3,8 @@ package meteordevelopment.addons.example;
 import meteordevelopment.addons.example.modules.ExampleModule;
 import meteordevelopment.addons.example.modules.ExampleModule2;
 import minegame159.meteorclient.MeteorAddon;
-import minegame159.meteorclient.modules.Category;
-import minegame159.meteorclient.modules.Modules;
+import minegame159.meteorclient.systems.modules.Category;
+import minegame159.meteorclient.systems.modules.Modules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
