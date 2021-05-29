@@ -1,8 +1,8 @@
 package meteordevelopment.addons.template;
 
 import meteordevelopment.addons.template.commands.ExampleCommand;
-import meteordevelopment.addons.template.modules.Example;
 import meteordevelopment.addons.template.modules.AnotherExample;
+import meteordevelopment.addons.template.modules.Example;
 import minegame159.meteorclient.MeteorAddon;
 import minegame159.meteorclient.systems.commands.Commands;
 import minegame159.meteorclient.systems.modules.Category;
