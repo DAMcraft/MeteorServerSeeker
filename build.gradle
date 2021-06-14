@@ -1,22 +1,25 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.9-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven { url "https://jitpack.io" }
+	maven {
+		name = "jitpack"
+		url = "https://jitpack.io"
+	}
 }
 
 dependencies {
 	//Minecraft
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings "net.fabricmc:yarn:${project.yarn_version}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	//Meteor
@@ -37,28 +40,5 @@ tasks.withType(JavaCompile).configureEach {
 	def targetVersion = 8
 	if (JavaVersion.current().isJava9Compatible()) {
 		it.options.release = targetVersion
-	}
-}
-
-java {
-	withSourcesJar()
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
-}
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
 	}
 }
