@@ -1,0 +1,27 @@
+name: devbuild
+on:
+  - push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK 16
+        uses: actions/setup-java@v2
+        with:
+          java-version: 16
+          distribution: adopt
+      - name: Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+      - name: Create Dev Build release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: latest
+          prerelease: true
+          title: Dev Build
+          files: |
+            ./build/libs/*.jar
