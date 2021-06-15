@@ -1,0 +1,36 @@
+name: build
+'on':
+  - pull_request
+  - push
+jobs:
+  build:
+    strategy:
+      matrix:
+        java:
+          - 16
+        os:
+          - ubuntu-20.04
+          - windows-latest
+    runs-on: '${{ matrix.os }}'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: 'Setup JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v1
+        with:
+          java-version: '${{ matrix.java }}'
+      - name: Make gradle wrapper executable
+        if: '${{ runner.os != ''Windows'' }}'
+        run: chmod +x ./gradlew
+      - name: Build
+        run: ./gradlew build
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: latest
+          prerelease: true
+          title: Dev Build
+          files: |
+            ./build/libs/*.jar
