@@ -1,7 +1,7 @@
-name: checks
-on:
-  - pull_request
-  - push
+name: Build Pull Request
+
+on: pull_request
+
 jobs:
   build:
     strategy:
@@ -11,6 +11,7 @@ jobs:
           - windows-latest
           - ubuntu-latest
     runs-on: '${{ matrix.os }}'
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,3 +24,8 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: build-artifacts
+          path: build/libs
