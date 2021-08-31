@@ -20,6 +20,9 @@
   "mixins": [
     "template.mixins.json"
   ],
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
   "depends": {
     "java": ">=16",
     "minecraft": ">=@mc_version@",
