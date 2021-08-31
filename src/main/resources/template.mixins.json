@@ -2,7 +2,9 @@
   "required": true,
   "package": "meteordevelopment.addons.template.mixins",
   "compatibilityLevel": "JAVA_16",
-  "client": [],
+  "client": [
+
+  ],
   "injectors": {
     "defaultRequire": 1
   }
