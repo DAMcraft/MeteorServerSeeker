@@ -1,5 +1,4 @@
 name: Publish Development Build
-
 on: push
 
 jobs:
