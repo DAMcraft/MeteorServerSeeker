@@ -11,8 +11,8 @@ group = project.maven_group
 
 repositories {
     maven {
-        name = "jitpack"
-        url = "https://jitpack.io"
+        name = "meteor-maven"
+        url = "https://maven.meteordev.org/snapshots"
     }
 }
 
@@ -23,7 +23,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Meteor
-    modImplementation "com.github.MeteorDevelopment:meteor-client:v${project.meteor_version}"
+    modImplementation "meteordevelopment:meteor-client:${project.meteor_version}"
 }
 
 processResources {
