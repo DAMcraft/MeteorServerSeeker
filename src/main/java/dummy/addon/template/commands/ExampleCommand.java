@@ -1,4 +1,4 @@
-package meteordevelopment.addons.template.commands;
+package dummy.addon.template.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import meteordevelopment.meteorclient.systems.commands.Command;

@@ -1,8 +1,9 @@
-package meteordevelopment.addons.template;
+package dummy.addon.template;
 
-import meteordevelopment.addons.template.commands.*;
-import meteordevelopment.addons.template.modules.*;
-import meteordevelopment.addons.template.modules.hud.*;
+import dummy.addon.template.commands.ExampleCommand;
+import dummy.addon.template.modules.AnotherExample;
+import dummy.addon.template.modules.Example;
+import dummy.addon.template.modules.hud.HudExample;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.commands.Commands;
