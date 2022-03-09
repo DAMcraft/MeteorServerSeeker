@@ -1,11 +1,11 @@
 package dummy.addon.template.modules.hud;
 
-import meteordevelopment.meteorclient.systems.modules.render.hud.HUD;
-import meteordevelopment.meteorclient.systems.modules.render.hud.modules.DoubleTextHudElement;
+import meteordevelopment.meteorclient.systems.hud.HUD;
+import meteordevelopment.meteorclient.systems.hud.modules.DoubleTextHudElement;
 
 public class HudExample extends DoubleTextHudElement {
-    public HudExample(HUD hud) {
-        super(hud, "hud-example", "Description", "Static left text: ", false);
+    public HudExample() {
+        super(HUD.get(), "hud-example", "Description", "Static left text: ", false);
     }
 
     @Override
