@@ -5,7 +5,7 @@
   "name": "Addon Template",
   "description": "An addon template for the Meteor addons.",
   "authors": [
-    "seasnail8169"
+    "seasnail"
   ],
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
@@ -14,11 +14,11 @@
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "dummy.addon.template.TemplateAddon"
+      "com.example.addon.Addon"
     ]
   },
   "mixins": [
-    "template.mixins.json"
+    "addon.mixins.json"
   ],
   "custom": {
     "meteor-client:color": "225,25,25"
