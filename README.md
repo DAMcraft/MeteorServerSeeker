@@ -1,8 +1,6 @@
-# Meteor Addon Template
+# Official ServerSeeker addon for meteor
 
-A template to allow easy usage of the Meteor Addon API.
+This uses the [ServerSeekerAPI](https://github.com/DAMcraft/ServerSeekerAPI-docs).
 
-### How to use:  
-- Clone this project
-- Use this template to create new modules/commands
-- Run the mod with Meteor.
+Official support server: https://discord.gg/jVyHyYbqdS
+
