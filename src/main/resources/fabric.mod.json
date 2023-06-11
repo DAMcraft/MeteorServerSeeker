@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "addon-template",
+  "id": "serverseeker",
   "version": "${version}",
-  "name": "Addon Template",
+  "name": "ServerSeeker",
   "description": "An addon template for the Meteor addons.",
   "authors": [
-    "seasnail"
+    "DAMcraft"
   ],
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
@@ -14,14 +14,14 @@
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.Addon"
+      "de.damcraft.serverseeker.ServerSeeker"
     ]
   },
   "mixins": [
-    "addon-template.mixins.json"
+    "serverseeker.mixins.json"
   ],
   "custom": {
-    "meteor-client:color": "225,25,25"
+    "meteor-client:color": "153,45,34"
   },
   "depends": {
     "java": ">=17",

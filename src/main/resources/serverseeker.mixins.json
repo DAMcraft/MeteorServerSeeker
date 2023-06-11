@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "de.damcraft.serverseeker.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "MultiplayerScreenAccessor",
+    "MultiplayerScreenMixin",
+    "SystemsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
