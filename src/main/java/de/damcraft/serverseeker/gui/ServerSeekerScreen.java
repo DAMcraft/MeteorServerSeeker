@@ -35,11 +35,13 @@ public class ServerSeekerScreen extends WindowScreen {
         }
 
         WHorizontalList accountList = add(theme.horizontalList()).expandX().widget();
-        accountList.add(theme.label("Logged in using Discord (ID: " + ServerSeekerSystem.get().userId + ") "));
+        accountList.add(theme.label("Logged in using Discord ("+ ServerSeekerSystem.get().discordUsername +") "));
         WButton logoutButton = accountList.add(theme.button("Logout")).widget();
         logoutButton.action = () -> {
             ServerSeekerSystem.get().apiKey = "";
-            ServerSeekerSystem.get().userId = "";
+            ServerSeekerSystem.get().discordId = "";
+            ServerSeekerSystem.get().discordUsername = "";
+            ServerSeekerSystem.get().discordAvatarUrl = "";
             ServerSeekerSystem.get().save();
             reload();
         };

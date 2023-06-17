@@ -123,9 +123,37 @@ public class DiscordAuth {
                 return;
             }
             String apiKey = obj.get("api_key").getAsString();
-            String userId = obj.get("user_id").getAsString();
             Systems.get(ServerSeekerSystem.class).apiKey = apiKey;
-            Systems.get(ServerSeekerSystem.class).userId = userId;
+
+            // Get the discord user info
+            params = new JsonObject();
+
+            params.addProperty("api_key", apiKey);
+
+            jsonResp = SmallHttp.post("https://serverseeker.damcraft.de/api/v1/user_info", params.toString());
+
+            // {
+            //                "discord_id": user_id,
+            //                "discord_username": discord_username,
+            //                "discord_avatar_url": avatar_url
+            //            } or {"error": "..."}
+
+            obj = gson.fromJson(jsonResp, JsonObject.class);
+
+            if (obj.has("error")) {
+                System.out.println("Error: " + obj.get("error").getAsString());
+                callback.accept(null, obj.get("error").getAsString());
+                return;
+            }
+
+            String discordId = obj.get("discord_id").getAsString();
+            String discordUsername = obj.get("discord_username").getAsString();
+            String discordAvatarUrl = obj.get("discord_avatar_url").getAsString();
+
+            Systems.get(ServerSeekerSystem.class).discordId = discordId;
+            Systems.get(ServerSeekerSystem.class).discordUsername = discordUsername;
+            Systems.get(ServerSeekerSystem.class).discordAvatarUrl = discordAvatarUrl;
+
             callback.accept(apiKey, null);
         }
     }

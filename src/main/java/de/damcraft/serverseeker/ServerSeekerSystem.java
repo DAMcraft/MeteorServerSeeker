@@ -11,7 +11,11 @@ public class ServerSeekerSystem extends System<ServerSeekerSystem> {
 
     public String apiKey = "";
 
-    public String userId = "";
+    public String discordId = "";
+
+    public String discordUsername = "";
+
+    public String discordAvatarUrl = "";
 
     public static ServerSeekerSystem get() {
         return Systems.get(ServerSeekerSystem.class);
@@ -22,7 +26,9 @@ public class ServerSeekerSystem extends System<ServerSeekerSystem> {
         NbtCompound tag = new NbtCompound();
 
         tag.putString("apiKey", apiKey);
-        tag.putString("userId", userId);
+        tag.putString("userId", discordId);
+        tag.putString("username", discordUsername);
+        tag.putString("avatarUrl", discordAvatarUrl);
 
         return tag;
     }
@@ -30,7 +36,9 @@ public class ServerSeekerSystem extends System<ServerSeekerSystem> {
     @Override
     public ServerSeekerSystem fromTag(NbtCompound tag) {
         apiKey = tag.getString("apiKey");
-        userId = tag.getString("userId");
+        discordId = tag.getString("userId");
+        discordUsername = tag.getString("username");
+        discordAvatarUrl = tag.getString("avatarUrl");
 
         return this;
     }
