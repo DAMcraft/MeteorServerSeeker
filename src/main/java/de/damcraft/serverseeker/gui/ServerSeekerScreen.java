@@ -1,5 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
+import de.damcraft.serverseeker.DiscordAvatar;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
 import meteordevelopment.meteorclient.gui.GuiThemes;
@@ -35,7 +36,11 @@ public class ServerSeekerScreen extends WindowScreen {
         }
 
         WHorizontalList accountList = add(theme.horizontalList()).expandX().widget();
-        accountList.add(theme.label("Logged in using Discord ("+ ServerSeekerSystem.get().discordUsername +") "));
+        // Add an image of the user's avatar
+        if (!ServerSeekerSystem.get().discordAvatarUrl.isEmpty()) {
+            accountList.add(theme.texture(32, 32, 0, new DiscordAvatar(ServerSeekerSystem.get().discordAvatarUrl + "?size=32")));
+        }
+        accountList.add(theme.label(ServerSeekerSystem.get().discordUsername)).expandX();
         WButton logoutButton = accountList.add(theme.button("Logout")).widget();
         logoutButton.action = () -> {
             ServerSeekerSystem.get().apiKey = "";

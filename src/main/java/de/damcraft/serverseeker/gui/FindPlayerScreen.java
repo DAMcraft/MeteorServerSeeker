@@ -116,9 +116,6 @@ public class FindPlayerScreen extends WindowScreen {
             table.row();
 
             table.add(theme.horizontalSeparator()).expandX();
-            table.add(theme.horizontalSeparator()).expandX();
-            table.add(theme.horizontalSeparator()).expandX();
-            table.add(theme.horizontalSeparator()).expandX();
             table.row();
 
 

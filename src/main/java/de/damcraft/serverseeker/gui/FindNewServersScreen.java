@@ -31,6 +31,14 @@ public class FindNewServersScreen extends WindowScreen {
         Custom
     }
 
+    public enum NumRangeType {
+        Any,
+        Equals,
+        At_Least,
+        At_Most,
+        Between
+    }
+
     private final Settings settings = new Settings();
     private final SettingGroup sg = settings.getDefaultGroup();
 
@@ -43,34 +51,77 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Boolean> anyOnlinePlayersSetting = sg.add(new BoolSetting.Builder()
-        .name("any-online-players")
-        .defaultValue(true)
+    private final Setting<NumRangeType> onlinePlayersNumTypeSetting = sg.add(new EnumSetting.Builder<NumRangeType>()
+        .name("online-players")
+        .description("The type of number range for the online players")
+        .defaultValue(NumRangeType.Any)
         .build()
     );
 
-    private final Setting<Integer> onlinePlayersSetting = sg.add(new IntSetting.Builder()
-        .name("online-players")
+    private final Setting<Integer> equalsOnlinePlayersSetting = sg.add(new IntSetting.Builder()
+        .name("online-player-equals")
         .description("The amount of online players the server should have")
-        .defaultValue(0)
+        .defaultValue(2)
         .min(0)
-        .visible(() -> !anyOnlinePlayersSetting.get())
+        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals))
         .noSlider()
         .build()
     );
 
-    private final Setting<Boolean> anyMaxPlayersSetting = sg.add(new BoolSetting.Builder()
-        .name("any-max-players")
-        .defaultValue(true)
+    private final Setting<Integer> atLeastOnlinePlayersSetting = sg.add(new IntSetting.Builder()
+        .name("online-player-at-least")
+        .description("The minimum amount of online players the server should have")
+        .defaultValue(1)
+        .min(0)
+        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Least) || onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .noSlider()
         .build()
     );
 
-    private final Setting<Integer> maxPlayersSetting = sg.add(new IntSetting.Builder()
-        .name("max-players")
-        .description("The maximum amount of players the servers should hold")
+    private final Setting<Integer> atMostOnlinePlayersSetting = sg.add(new IntSetting.Builder()
+        .name("online-player-at-most")
+        .description("The maximum amount of online players the server should have")
         .defaultValue(20)
         .min(0)
-        .visible(() -> !anyMaxPlayersSetting.get())
+        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Most) || onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .noSlider()
+        .build()
+    );
+
+
+    private final Setting<NumRangeType> maxPlayersNumTypeSetting = sg.add(new EnumSetting.Builder<NumRangeType>()
+        .name("max-players")
+        .description("The type of number range for the max players")
+        .defaultValue(NumRangeType.Any)
+        .build()
+    );
+
+    private final Setting<Integer> equalsMaxPlayersSetting = sg.add(new IntSetting.Builder()
+        .name("max-players-equals")
+        .description("The amount of max players the server should have")
+        .defaultValue(2)
+        .min(0)
+        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals))
+        .noSlider()
+        .build()
+    );
+
+    private final Setting<Integer> atLeastMaxPlayersSetting = sg.add(new IntSetting.Builder()
+        .name("max-players-at-least")
+        .description("The minimum amount of max players the server should have")
+        .defaultValue(1)
+        .min(0)
+        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Least) || maxPlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .noSlider()
+        .build()
+    );
+
+    private final Setting<Integer> atMostMaxPlayersSetting = sg.add(new IntSetting.Builder()
+        .name("max-players-at-most")
+        .description("The maximum amount of max players the server should have")
+        .defaultValue(20)
+        .min(0)
+        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Most) || maxPlayersNumTypeSetting.get().equals(NumRangeType.Between))
         .noSlider()
         .build()
     );
@@ -128,11 +179,51 @@ public class FindNewServersScreen extends WindowScreen {
             // Create a new JSON object
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("api_key", apiKey);
-            if (!anyOnlinePlayersSetting.get()) {
-                jsonObject.addProperty("online_players", onlinePlayersSetting.get());
+            if (!onlinePlayersNumTypeSetting.get().equals(NumRangeType.Any)) {
+                if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals)) {
+                    jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
+                } else if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Least)) {
+                    // [n, "inf"]
+                    JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(atLeastOnlinePlayersSetting.get());
+                    jsonArray.add("inf");
+                    jsonObject.add("online_players", jsonArray);
+                } else if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Most)) {
+                    // [0, n]
+                    JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(0);
+                    jsonArray.add(atMostOnlinePlayersSetting.get());
+                    jsonObject.add("online_players", jsonArray);
+                } else if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between)) {
+                    // [min, max]
+                    JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(atLeastOnlinePlayersSetting.get());
+                    jsonArray.add(atMostOnlinePlayersSetting.get());
+                    jsonObject.add("online_players", jsonArray);
+                }
             }
-            if (!anyMaxPlayersSetting.get()) {
-                jsonObject.addProperty("max_players", maxPlayersSetting.get());
+            if (!maxPlayersNumTypeSetting.get().equals(NumRangeType.Any)) {
+                if (maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals)) {
+                    jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
+                } else if (maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Least)) {
+                    // [n, "inf"]
+                    JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(atLeastMaxPlayersSetting.get());
+                    jsonArray.add("inf");
+                    jsonObject.add("max_players", jsonArray);
+                } else if (maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Most)) {
+                    // [0, n]
+                    JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(0);
+                    jsonArray.add(atMostMaxPlayersSetting.get());
+                    jsonObject.add("max_players", jsonArray);
+                } else if (maxPlayersNumTypeSetting.get().equals(NumRangeType.Between)) {
+                    // [min, max]
+                    JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(atLeastMaxPlayersSetting.get());
+                    jsonArray.add(atMostMaxPlayersSetting.get());
+                    jsonObject.add("max_players", jsonArray);
+                }
             }
             if (crackedSetting.get() != cracked.Any) {
                 jsonObject.addProperty("cracked", crackedSetting.get() == cracked.Yes);

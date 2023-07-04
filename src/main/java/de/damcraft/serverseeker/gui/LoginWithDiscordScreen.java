@@ -9,9 +9,9 @@ public class LoginWithDiscordScreen extends WindowScreen {
 
     private boolean canClose = false;
 
-    ServerSeekerScreen parent;
+    WindowScreen parent;
 
-    public LoginWithDiscordScreen(ServerSeekerScreen parent) {
+    public LoginWithDiscordScreen(WindowScreen parent) {
         super(GuiThemes.get(), "Login with Discord");
         this.parent = parent;
     }
