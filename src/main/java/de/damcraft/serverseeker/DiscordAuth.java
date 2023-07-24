@@ -104,7 +104,7 @@ public class DiscordAuth {
             params.addProperty("code", code);
             params.addProperty("usage", "meteor serverseeker");
 
-            String jsonResp = SmallHttp.post("https://serverseeker.damcraft.de/api/v1/get_token", params.toString());
+            String jsonResp = SmallHttp.post("https://api.serverseeker.net/get_token", params.toString());
 
             // {"api_key": "..."} or {"error": "..."}
 
@@ -130,7 +130,7 @@ public class DiscordAuth {
 
             params.addProperty("api_key", apiKey);
 
-            jsonResp = SmallHttp.post("https://serverseeker.damcraft.de/api/v1/user_info", params.toString());
+            jsonResp = SmallHttp.post("https://api.serverseeker.net/user_info", params.toString());
 
             // {
             //                "discord_id": user_id,

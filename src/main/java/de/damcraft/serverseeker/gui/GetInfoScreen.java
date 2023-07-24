@@ -85,7 +85,7 @@ public class GetInfoScreen extends WindowScreen {
 
         String json = jsonObject.toString();
 
-        String jsonResp = SmallHttp.post("https://serverseeker.damcraft.de/api/v1/server_info", json);
+        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", json);
 
         Gson gson = new Gson();
         JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
