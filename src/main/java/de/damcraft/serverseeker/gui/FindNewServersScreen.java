@@ -13,11 +13,14 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
+import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerInfo;
 
 public class FindNewServersScreen extends WindowScreen {
+    private int timer;
+    public WButton findButton;
 
     public enum cracked {
         Any,
@@ -41,7 +44,6 @@ public class FindNewServersScreen extends WindowScreen {
 
     private final Settings settings = new Settings();
     private final SettingGroup sg = settings.getDefaultGroup();
-
     WContainer settingsContainer;
 
     private final Setting<cracked> crackedSetting = sg.add(new EnumSetting.Builder<cracked>()
@@ -171,7 +173,7 @@ public class FindNewServersScreen extends WindowScreen {
 
         settingsContainer = add(theme.verticalList()).widget();
         settingsContainer.add(theme.settings(settings));
-        WButton findButton = add(theme.button("Find")).expandX().widget();
+        findButton = add(theme.button("Find")).expandX().widget();
         findButton.action = () -> {
 
             String apiKey = Systems.get(ServerSeekerSystem.class).apiKey;
@@ -239,49 +241,52 @@ public class FindNewServersScreen extends WindowScreen {
             if (!online_only.get()) {
                 jsonObject.addProperty("online_after", 0);
             }
+            this.locked = true;
+            MeteorExecutor.execute(() -> {
+                String json = jsonObject.toString();
 
-            String json = jsonObject.toString();
+                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
 
-            String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
+                Gson gson = new Gson();
+                JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
 
-            Gson gson = new Gson();
-            JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
-
-            // Set error message if there is one
-            String error = resp.has("error") ? resp.get("error").getAsString() : null;
-            if (error != null) {
-                clear();
-                add(theme.label(error)).expandX();
-                return;
-            }
-            clear();
-            JsonArray servers = resp.getAsJsonArray("data");
-            if (servers.size() == 0) {
-                add(theme.label("No servers found")).expandX();
-                WButton backButton = add(theme.button("Back")).expandX().widget();
-                backButton.action = this::reload;
-                return;
-            }
-            add(theme.label("Found " + servers.size() + " servers")).expandX();
-            WButton addAllButton = add(theme.button("Add all")).expandX().widget();
-            addAllButton.action = () -> {
-                for (JsonElement server : servers) {
-                    String ip = server.getAsJsonObject().get("server").getAsString();
-
-                    ServerInfo info = new ServerInfo("ServerSeeker " + ip, ip, false);
-
-                    // Add server to list
-                    this.multiplayerScreen.getServerList().add(info, false);
+                // Set error message if there is one
+                String error = resp.has("error") ? resp.get("error").getAsString() : null;
+                if (error != null) {
+                    clear();
+                    add(theme.label(error)).expandX();
+                    return;
                 }
-                this.multiplayerScreen.getServerList().saveFile();
+                clear();
+                JsonArray servers = resp.getAsJsonArray("data");
+                if (servers.isEmpty()) {
+                    add(theme.label("No servers found")).expandX();
+                    WButton backButton = add(theme.button("Back")).expandX().widget();
+                    backButton.action = this::reload;
+                    return;
+                }
+                add(theme.label("Found " + servers.size() + " servers")).expandX();
+                WButton addAllButton = add(theme.button("Add all")).expandX().widget();
+                addAllButton.action = () -> {
+                    for (JsonElement server : servers) {
+                        String ip = server.getAsJsonObject().get("server").getAsString();
 
-                // Reload widget
-                ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+                        ServerInfo info = new ServerInfo("ServerSeeker " + ip, ip, false);
 
-                // Close screen
-                if (this.client == null) return;
-                client.setScreen(this.multiplayerScreen);
-            };
+                        // Add server to list
+                        this.multiplayerScreen.getServerList().add(info, false);
+                    }
+                    this.multiplayerScreen.getServerList().saveFile();
+
+                    // Reload widget
+                    ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+
+                    // Close screen
+                    if (this.client == null) return;
+                    client.setScreen(this.multiplayerScreen);
+                };
+                this.locked = false;
+            });
         };
     }
 
@@ -289,5 +294,29 @@ public class FindNewServersScreen extends WindowScreen {
     public void tick() {
         super.tick();
         settings.tick(settingsContainer, theme);
+
+        if (locked) {
+            if (timer > 2) {
+                findButton.set(getNext(findButton));
+                timer = 0;
+            }
+            else {
+                timer++;
+            }
+        }
+
+        else if (!findButton.getText().equals("Find")) {
+            findButton.set("Find");
+        }
+    }
+
+    private String getNext(WButton add) {
+        return switch (add.getText()) {
+            case "Find", "oo0" -> "ooo";
+            case "ooo" -> "0oo";
+            case "0oo" -> "o0o";
+            case "o0o" -> "oo0";
+            default -> "Find";
+        };
     }
 }
