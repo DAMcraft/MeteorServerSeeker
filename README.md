@@ -32,7 +32,7 @@ Now we can just add the servers we want, or even add all!   <br />
 
 
 ### Getting players on a server  
-Simply select a server and click on "Get players"!   >br />
+Simply select a server and click on "Get players"!   <br />
 ![image](https://github.com/Kaiasaurin/MeteorServerSeeker/assets/101678546/449c0950-49e2-4242-80b0-2063a4052e8a)  <br />
 You can now see the player history. Clicking on "Login" will log you into the account in cracked mode.    <br />
 ![image](https://github.com/DAMcraft/MeteorServerSeeker/assets/43420467/889bc3e4-1af0-438b-9d77-c8da8f282138) <br />
