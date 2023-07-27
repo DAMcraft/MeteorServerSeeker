@@ -1,4 +1,4 @@
-![image](https://github.com/DAMcraft/MeteorServerSeeker/assets/43420467/17e34718-69d8-4733-98ee-60119f286216)# Official ServerSeeker addon for meteor
+# Official ServerSeeker addon for meteor
 
 This uses the [ServerSeekerAPI](https://github.com/DAMcraft/ServerSeekerAPI-docs).
 
