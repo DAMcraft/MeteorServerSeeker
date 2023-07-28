@@ -3,12 +3,12 @@
   "id": "serverseeker",
   "version": "${version}",
   "name": "ServerSeeker",
-  "description": "An addon template for the Meteor addons.",
+  "description": "Serch for basically any Minecraft server that exists. Basically copenheimer, but public and better.",
   "authors": [
     "DAMcraft"
   ],
   "contact": {
-    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "repo": "https://github.com/DAMcraft/MeteorServerSeeker/"
   },
   "icon": "assets/serverseeker/icon.png",
   "environment": "client",
