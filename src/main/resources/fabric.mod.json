@@ -3,7 +3,7 @@
   "id": "serverseeker",
   "version": "${version}",
   "name": "ServerSeeker",
-  "description": "Serch for basically any Minecraft server that exists. Basically copenheimer, but public and better.",
+  "description": "Search for basically any Minecraft server that exists. Basically copenheimer, but public and better.",
   "authors": [
     "DAMcraft"
   ],
