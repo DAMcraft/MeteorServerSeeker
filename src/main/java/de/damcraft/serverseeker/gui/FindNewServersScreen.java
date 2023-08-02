@@ -34,6 +34,14 @@ public class FindNewServersScreen extends WindowScreen {
         Custom
     }
 
+    public enum software {
+        Any,
+        Vanilla,
+        Paper,
+        Spigot,
+        Bukkit
+    }
+
     public enum NumRangeType {
         Any,
         Equals,
@@ -135,6 +143,13 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
+    private final Setting<software> softwareSetting = sg.add(new EnumSetting.Builder<software>()
+        .name("software")
+        .description("The software the servers should have")
+        .defaultValue(software.Any)
+        .build()
+    );
+
     private final Setting<version> versionSetting = sg.add(new EnumSetting.Builder<version>()
         .name("version")
         .description("The protocol version the servers should have")
@@ -152,7 +167,7 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Boolean> online_only = sg.add(new BoolSetting.Builder()
+    private final Setting<Boolean> onlineOnly = sg.add(new BoolSetting.Builder()
         .name("online-only")
         .description("Whether to only show servers that are online")
         .defaultValue(true)
@@ -233,12 +248,15 @@ public class FindNewServersScreen extends WindowScreen {
             if (!descriptionSetting.get().isEmpty()) {
                 jsonObject.addProperty("description", descriptionSetting.get());
             }
+            if (softwareSetting.get() != software.Any) {
+                jsonObject.addProperty("software", softwareSetting.get().toString().toLowerCase());
+            }
             if (versionSetting.get() == version.Custom) {
                 jsonObject.addProperty("protocol", customProtocolSetting.get());
             } else if (versionSetting.get() == version.Current) {
                 jsonObject.addProperty("protocol", SharedConstants.getProtocolVersion());
             }
-            if (!online_only.get()) {
+            if (!onlineOnly.get()) {
                 jsonObject.addProperty("online_after", 0);
             }
             this.locked = true;
