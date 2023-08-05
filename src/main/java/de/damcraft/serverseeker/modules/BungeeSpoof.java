@@ -14,6 +14,7 @@ public class BungeeSpoof extends Module {
         .name("spoofed-address")
         .description("The spoofed IP address that will be sent to the server.")
         .defaultValue("127.0.0.1")
+        .filter((text, c) -> "1234567890.".contains(""+c))
         .build()
     );
 
