@@ -1,9 +1,18 @@
-# Official ServerSeeker addon for meteor
 
-This uses the [ServerSeekerAPI](https://github.com/DAMcraft/ServerSeekerAPI-docs).
+<h1 align="center"> Official ServerSeeker addon for meteor </h1>
 
-Official support server: https://discord.gg/jVyHyYbqdS
+<div align="center">
+    <h3>Offical ServerSeeker discord server (has a bot with a few more functionalities, like searching by country)</h3>
+    <a href="https://discord.gg/serverseeker-1087081486747971705">
+    <img src="https://invidget.switchblade.xyz/serverseeker-1087081486747971705">
+    </a>
+</div>  
+<br>
+<br>
+<br>    
 
+![Powered by ServerSeeker](https://img.shields.io/badge/Powered%20by%20the%20ServerSeeker--API-%232b2b2b.svg?style=for-the-badge&logo=python&logoColor=18d3ae)
+![Github Stars](https://img.shields.io/github/stars/DAMcraft/MeteorServerSeeker?style=for-the-badge&logo=github&labelColor=2b2b2b&color=2b2b2b)
 ## How to use:
 ### Logging in:
 Click on the big button saying <b>"ServerSeeker"</b> <br />  
