@@ -273,6 +273,7 @@ public class FindNewServersScreen extends WindowScreen {
                 if (error != null) {
                     clear();
                     add(theme.label(error)).expandX();
+                    this.locked = false;
                     return;
                 }
                 clear();
@@ -281,6 +282,7 @@ public class FindNewServersScreen extends WindowScreen {
                     add(theme.label("No servers found")).expandX();
                     WButton backButton = add(theme.button("Back")).expandX().widget();
                     backButton.action = this::reload;
+                    this.locked = false;
                     return;
                 }
                 add(theme.label("Found " + servers.size() + " servers")).expandX();
