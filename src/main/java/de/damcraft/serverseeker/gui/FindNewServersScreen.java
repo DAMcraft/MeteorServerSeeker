@@ -273,6 +273,8 @@ public class FindNewServersScreen extends WindowScreen {
                 if (error != null) {
                     clear();
                     add(theme.label(error)).expandX();
+                    WButton backButton = add(theme.button("Back")).expandX().widget();
+                    backButton.action = this::reload;
                     this.locked = false;
                     return;
                 }
