@@ -120,7 +120,7 @@ public class GetInfoScreen extends WindowScreen {
             add(theme.label("Attention: The server is NOT cracked!")).expandX();
             add(theme.label("")).expandX();
         }
-        String playersLabel = player.size() == 1 ? "player:" : "players:"
+        String playersLabel = players.size() == 1 ? "player:" : "players:";
         add(theme.label("Found " + players.size() + playersLabel));
 
         WTable table = add(theme.table()).widget();
