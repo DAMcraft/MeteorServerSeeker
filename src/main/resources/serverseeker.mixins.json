@@ -11,6 +11,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "HandshakeC2SMixin"
+    "HandshakeC2SAccessor"
   ]
 }
