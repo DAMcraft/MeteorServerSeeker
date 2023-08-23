@@ -75,6 +75,17 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
+    private final Setting<Integer> equalsOnlinePlayersSetting = sg.add(new IntSetting.Builder()
+            .name("online-player-equals")
+            .description("The amount of online players the server should have")
+            .defaultValue(2)
+            .min(0)
+            .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals))
+            .noSlider()
+            .build()
+    );
+
+
     private final Setting<Integer> atLeastOnlinePlayersSetting = sg.add(new IntSetting.Builder()
         .name("online-player-at-least")
         .description("The minimum amount of online players the server should have")
@@ -102,6 +113,17 @@ public class FindNewServersScreen extends WindowScreen {
         .defaultValue(NumRangeType.Any)
         .build()
     );
+
+    private final Setting<Integer> equalsMaxPlayersSetting = sg.add(new IntSetting.Builder()
+            .name("max-players-equals")
+            .description("The amount of max players the server should have")
+            .defaultValue(2)
+            .min(0)
+            .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals))
+            .noSlider()
+            .build()
+    );
+
 
     private final Setting<Integer> atLeastMaxPlayersSetting = sg.add(new IntSetting.Builder()
         .name("max-players-at-least")
@@ -207,51 +229,62 @@ public class FindNewServersScreen extends WindowScreen {
             // Create a new JSON object
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("api_key", apiKey);
-            JsonArray jsonArray = new JsonArray();
 
             switch (onlinePlayersNumTypeSetting.get()) {
-                case Any -> jsonArray = null;
 
                 // [n, "inf"]
                 case At_Least -> {
+                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastOnlinePlayersSetting.get());
                     jsonArray.add("inf");
+                    jsonObject.add("online_players", jsonArray);
                 }
 
                 // [0, n]
                 case At_Most -> {
+                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(0);
                     jsonArray.add(atMostOnlinePlayersSetting.get());
+                    jsonObject.add("online_players", jsonArray);
                 }
 
                 // [min, max]
                 case Between -> {
+                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastOnlinePlayersSetting.get());
                     jsonArray.add(atMostOnlinePlayersSetting.get());
+                    jsonObject.add("online_players", jsonArray);
+                }
+                case Equals -> {
+                    jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
                 }
             }
-            jsonObject.add("online_players", jsonArray);
-            jsonArray = new JsonArray();
 
             switch (maxPlayersNumTypeSetting.get()) {
-                case Any -> jsonArray = null;
                 case At_Least -> {
                     // [n, "inf"]
+                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastMaxPlayersSetting.get());
                     jsonObject.add("max_players", jsonArray);
                 }
                 case At_Most -> {
                     // [0, n]
+                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(0);
                     jsonArray.add(atMostMaxPlayersSetting.get());
+                    jsonObject.add("max_players", jsonArray);
                 }
                 case Between -> {
                     // [min, max]
+                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastMaxPlayersSetting.get());
                     jsonArray.add(atMostMaxPlayersSetting.get());
+                    jsonObject.add("max_players", jsonArray);
+                }
+                case Equals -> {
+                    jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
                 }
             }
-            jsonObject.add("max_players", jsonArray);
 
             switch (geoSearchTypeSetting.get()) {
                 case None -> {}
