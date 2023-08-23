@@ -293,7 +293,6 @@ public class FindNewServersScreen extends WindowScreen {
 
             if (versionSetting.get() == Version.Custom)
                 jsonObject.addProperty("protocol", customProtocolSetting.get());
-
             else if (versionSetting.get() == Version.Current)
                 jsonObject.addProperty("protocol", SharedConstants.getProtocolVersion());
 
