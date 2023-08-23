@@ -281,12 +281,24 @@ public class FindNewServersScreen extends WindowScreen {
                 case ASN: jsonObject.addProperty("asn", asnNumberSetting.get()); break;
                 case Country_Code: jsonObject.addProperty("country_code", countryCodeSetting.get()); break;
             }
-            if (crackedSetting.get() != Cracked.Any)          jsonObject.addProperty("cracked", crackedSetting.get() == Cracked.Yes);
-            if (!descriptionSetting.get().isEmpty())          jsonObject.addProperty("description", descriptionSetting.get());
-            if (softwareSetting.get() != Software.Any)        jsonObject.addProperty("software", softwareSetting.get().toString().toLowerCase());
-            if (versionSetting.get() == Version.Custom)       jsonObject.addProperty("protocol", customProtocolSetting.get());
-            else if (versionSetting.get() == Version.Current) jsonObject.addProperty("protocol", SharedConstants.getProtocolVersion());
-            if (!onlineOnlySetting.get())                     jsonObject.addProperty("online_after", 0);
+
+            if (crackedSetting.get() != Cracked.Any)
+                jsonObject.addProperty("cracked", crackedSetting.get() == Cracked.Yes);
+
+            if (!descriptionSetting.get().isEmpty())
+                jsonObject.addProperty("description", descriptionSetting.get());
+
+            if (softwareSetting.get() != Software.Any)
+                jsonObject.addProperty("software", softwareSetting.get().toString().toLowerCase());
+
+            if (versionSetting.get() == Version.Custom)
+                jsonObject.addProperty("protocol", customProtocolSetting.get());
+
+            else if (versionSetting.get() == Version.Current)
+                jsonObject.addProperty("protocol", SharedConstants.getProtocolVersion());
+
+            if (!onlineOnlySetting.get())
+                jsonObject.addProperty("online_after", 0);
 
 
             this.locked = true;
