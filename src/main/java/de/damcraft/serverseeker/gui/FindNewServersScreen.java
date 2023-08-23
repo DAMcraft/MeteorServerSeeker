@@ -22,19 +22,19 @@ public class FindNewServersScreen extends WindowScreen {
     private int timer;
     public WButton findButton;
 
-    public enum cracked {
+    public enum Cracked {
         Any,
         Yes,
         No
     }
 
-    public enum version {
+    public enum Version {
         Current,
         Any,
         Custom
     }
 
-    public enum software {
+    public enum Software {
         Any,
         Vanilla,
         Paper,
@@ -50,14 +50,21 @@ public class FindNewServersScreen extends WindowScreen {
         Between
     }
 
+    // Didn't have a better name
+    public enum GeoSearchType {
+        None,
+        ASN,
+        Country_Code
+    }
+
     private final Settings settings = new Settings();
     private final SettingGroup sg = settings.getDefaultGroup();
     WContainer settingsContainer;
 
-    private final Setting<cracked> crackedSetting = sg.add(new EnumSetting.Builder<cracked>()
+    private final Setting<Cracked> crackedSetting = sg.add(new EnumSetting.Builder<Cracked>()
         .name("cracked")
         .description("Whether the server should be cracked or not")
-        .defaultValue(cracked.Any)
+        .defaultValue(Cracked.Any)
         .build()
     );
 
@@ -143,17 +150,17 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<software> softwareSetting = sg.add(new EnumSetting.Builder<software>()
+    private final Setting<Software> softwareSetting = sg.add(new EnumSetting.Builder<Software>()
         .name("software")
         .description("The software the servers should have")
-        .defaultValue(software.Any)
+        .defaultValue(Software.Any)
         .build()
     );
 
-    private final Setting<version> versionSetting = sg.add(new EnumSetting.Builder<version>()
+    private final Setting<Version> versionSetting = sg.add(new EnumSetting.Builder<Version>()
         .name("version")
         .description("The protocol version the servers should have")
-        .defaultValue(version.Current)
+        .defaultValue(Version.Current)
         .build()
     );
 
@@ -161,16 +168,40 @@ public class FindNewServersScreen extends WindowScreen {
         .name("protocol")
         .description("The protocol version the servers should have")
         .defaultValue(SharedConstants.getProtocolVersion())
-        .visible(() -> versionSetting.get() == version.Custom)
+        .visible(() -> versionSetting.get() == Version.Custom)
         .min(0)
         .noSlider()
         .build()
     );
 
-    private final Setting<Boolean> onlineOnly = sg.add(new BoolSetting.Builder()
+    private final Setting<Boolean> onlineOnlySetting = sg.add(new BoolSetting.Builder()
         .name("online-only")
         .description("Whether to only show servers that are online")
         .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<GeoSearchType> geoSearchTypeSetting = sg.add(new EnumSetting.Builder<GeoSearchType>()
+        .name("geo-search-type")
+        .description("Whether to search by ASN or country code")
+        .defaultValue(GeoSearchType.None)
+        .build()
+    );
+
+    private final Setting<Integer> asnNumberSetting = sg.add(new IntSetting.Builder()
+        .name("asn")
+        .description("The ASN of the server")
+        .defaultValue(24940)
+        .noSlider()
+        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.ASN)
+        .build()
+    );
+
+    private final Setting<String> countryCodeSetting = sg.add(new StringSetting.Builder()
+        .name("country-code")
+        .description("The country code the server should have")
+        .defaultValue("DE")
+        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.Country_Code)
         .build()
     );
 
@@ -196,73 +227,82 @@ public class FindNewServersScreen extends WindowScreen {
             // Create a new JSON object
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("api_key", apiKey);
-            if (!onlinePlayersNumTypeSetting.get().equals(NumRangeType.Any)) {
-                if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals)) {
-                    jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
-                } else if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Least)) {
-                    // [n, "inf"]
-                    JsonArray jsonArray = new JsonArray();
+            JsonArray jsonArray = new JsonArray();
+
+            switch (onlinePlayersNumTypeSetting.get()) {
+                case Any: jsonArray = null; break;
+                // [n, "inf"]
+                case At_Least: {
                     jsonArray.add(atLeastOnlinePlayersSetting.get());
                     jsonArray.add("inf");
-                    jsonObject.add("online_players", jsonArray);
-                } else if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Most)) {
-                    // [0, n]
-                    JsonArray jsonArray = new JsonArray();
+                    break;
+                }
+                // [0, n]
+                case At_Most: {
                     jsonArray.add(0);
                     jsonArray.add(atMostOnlinePlayersSetting.get());
-                    jsonObject.add("online_players", jsonArray);
-                } else if (onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between)) {
-                    // [min, max]
-                    JsonArray jsonArray = new JsonArray();
+                    break;
+                }
+                // [min, max]
+                case Between: {
                     jsonArray.add(atLeastOnlinePlayersSetting.get());
                     jsonArray.add(atMostOnlinePlayersSetting.get());
-                    jsonObject.add("online_players", jsonArray);
+                    break;
                 }
             }
-            if (!maxPlayersNumTypeSetting.get().equals(NumRangeType.Any)) {
-                if (maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals)) {
-                    jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
-                } else if (maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Least)) {
+            jsonObject.add("online_players", jsonArray);
+            jsonArray = new JsonArray();
+
+            switch (maxPlayersNumTypeSetting.get()) {
+                case Any: jsonArray = null; break;
+                case At_Least: {
                     // [n, "inf"]
-                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastMaxPlayersSetting.get());
-                    jsonArray.add("inf");
                     jsonObject.add("max_players", jsonArray);
-                } else if (maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Most)) {
+                    break;
+                }
+                case At_Most: {
                     // [0, n]
-                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(0);
                     jsonArray.add(atMostMaxPlayersSetting.get());
-                    jsonObject.add("max_players", jsonArray);
-                } else if (maxPlayersNumTypeSetting.get().equals(NumRangeType.Between)) {
+                    break;
+                }
+                case Between: {
                     // [min, max]
-                    JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastMaxPlayersSetting.get());
                     jsonArray.add(atMostMaxPlayersSetting.get());
-                    jsonObject.add("max_players", jsonArray);
+                    break;
                 }
             }
-            if (crackedSetting.get() != cracked.Any) {
-                jsonObject.addProperty("cracked", crackedSetting.get() == cracked.Yes);
+            jsonObject.add("max_players", jsonArray);
+
+            switch (geoSearchTypeSetting.get()) {
+                case None: break;
+                case ASN: jsonObject.addProperty("asn", asnNumberSetting.get()); break;
+                case Country_Code: jsonObject.addProperty("country_code", countryCodeSetting.get()); break;
             }
-            if (!descriptionSetting.get().isEmpty()) {
+
+            if (crackedSetting.get() != Cracked.Any)
+                jsonObject.addProperty("cracked", crackedSetting.get() == Cracked.Yes);
+
+            if (!descriptionSetting.get().isEmpty())
                 jsonObject.addProperty("description", descriptionSetting.get());
-            }
-            if (softwareSetting.get() != software.Any) {
+
+            if (softwareSetting.get() != Software.Any)
                 jsonObject.addProperty("software", softwareSetting.get().toString().toLowerCase());
-            }
-            if (versionSetting.get() == version.Custom) {
+
+            if (versionSetting.get() == Version.Custom)
                 jsonObject.addProperty("protocol", customProtocolSetting.get());
-            } else if (versionSetting.get() == version.Current) {
+            else if (versionSetting.get() == Version.Current)
                 jsonObject.addProperty("protocol", SharedConstants.getProtocolVersion());
-            }
-            if (!onlineOnly.get()) {
+
+            if (!onlineOnlySetting.get())
                 jsonObject.addProperty("online_after", 0);
-            }
+
+
             this.locked = true;
             MeteorExecutor.execute(() -> {
                 String json = jsonObject.toString();
-
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
 
                 Gson gson = new Gson();
