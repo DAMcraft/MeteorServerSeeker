@@ -75,16 +75,6 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Integer> equalsOnlinePlayersSetting = sg.add(new IntSetting.Builder()
-        .name("online-player-equals")
-        .description("The amount of online players the server should have")
-        .defaultValue(2)
-        .min(0)
-        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals))
-        .noSlider()
-        .build()
-    );
-
     private final Setting<Integer> atLeastOnlinePlayersSetting = sg.add(new IntSetting.Builder()
         .name("online-player-at-least")
         .description("The minimum amount of online players the server should have")
@@ -110,16 +100,6 @@ public class FindNewServersScreen extends WindowScreen {
         .name("max-players")
         .description("The type of number range for the max players")
         .defaultValue(NumRangeType.Any)
-        .build()
-    );
-
-    private final Setting<Integer> equalsMaxPlayersSetting = sg.add(new IntSetting.Builder()
-        .name("max-players-equals")
-        .description("The amount of max players the server should have")
-        .defaultValue(2)
-        .min(0)
-        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals))
-        .noSlider()
         .build()
     );
 
@@ -230,56 +210,53 @@ public class FindNewServersScreen extends WindowScreen {
             JsonArray jsonArray = new JsonArray();
 
             switch (onlinePlayersNumTypeSetting.get()) {
-                case Any: jsonArray = null; break;
+                case Any -> jsonArray = null;
+
                 // [n, "inf"]
-                case At_Least: {
+                case At_Least -> {
                     jsonArray.add(atLeastOnlinePlayersSetting.get());
                     jsonArray.add("inf");
-                    break;
                 }
+
                 // [0, n]
-                case At_Most: {
+                case At_Most -> {
                     jsonArray.add(0);
                     jsonArray.add(atMostOnlinePlayersSetting.get());
-                    break;
                 }
+
                 // [min, max]
-                case Between: {
+                case Between -> {
                     jsonArray.add(atLeastOnlinePlayersSetting.get());
                     jsonArray.add(atMostOnlinePlayersSetting.get());
-                    break;
                 }
             }
             jsonObject.add("online_players", jsonArray);
             jsonArray = new JsonArray();
 
             switch (maxPlayersNumTypeSetting.get()) {
-                case Any: jsonArray = null; break;
-                case At_Least: {
+                case Any -> jsonArray = null;
+                case At_Least -> {
                     // [n, "inf"]
                     jsonArray.add(atLeastMaxPlayersSetting.get());
                     jsonObject.add("max_players", jsonArray);
-                    break;
                 }
-                case At_Most: {
+                case At_Most -> {
                     // [0, n]
                     jsonArray.add(0);
                     jsonArray.add(atMostMaxPlayersSetting.get());
-                    break;
                 }
-                case Between: {
+                case Between -> {
                     // [min, max]
                     jsonArray.add(atLeastMaxPlayersSetting.get());
                     jsonArray.add(atMostMaxPlayersSetting.get());
-                    break;
                 }
             }
             jsonObject.add("max_players", jsonArray);
 
             switch (geoSearchTypeSetting.get()) {
-                case None: break;
-                case ASN: jsonObject.addProperty("asn", asnNumberSetting.get()); break;
-                case Country_Code: jsonObject.addProperty("country_code", countryCodeSetting.get()); break;
+                case None -> {}
+                case ASN -> jsonObject.addProperty("asn", asnNumberSetting.get());
+                case Country_Code -> jsonObject.addProperty("country_code", countryCodeSetting.get());
             }
 
             if (crackedSetting.get() != Cracked.Any)
