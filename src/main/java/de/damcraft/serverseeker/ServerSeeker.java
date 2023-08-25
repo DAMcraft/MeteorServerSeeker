@@ -5,15 +5,12 @@ import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.modules.BungeeSpoof;
 import de.damcraft.serverseeker.country.CountrySetting;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
-import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.*;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 

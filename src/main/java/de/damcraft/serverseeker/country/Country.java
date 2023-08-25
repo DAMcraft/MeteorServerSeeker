@@ -1,6 +1,5 @@
 package de.damcraft.serverseeker.country;
 
-import meteordevelopment.meteorclient.gui.renderer.packer.GuiTexture;
 import meteordevelopment.meteorclient.renderer.Texture;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
