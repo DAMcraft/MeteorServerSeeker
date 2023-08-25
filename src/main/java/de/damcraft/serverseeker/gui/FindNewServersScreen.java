@@ -4,9 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
+import de.damcraft.serverseeker.country.Country;
+import de.damcraft.serverseeker.country.CountrySetting;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
@@ -54,7 +57,7 @@ public class FindNewServersScreen extends WindowScreen {
     public enum GeoSearchType {
         None,
         ASN,
-        Country_Code
+        Country
     }
 
     private final Settings settings = new Settings();
@@ -199,11 +202,11 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<String> countryCodeSetting = sg.add(new StringSetting.Builder()
-        .name("country-code")
-        .description("The country code the server should have")
-        .defaultValue("DE")
-        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.Country_Code)
+    private final Setting<Country> countrySetting = sg.add(new CountrySetting.Builder()
+        .name("country")
+        .description("The country the server should be located in")
+        .defaultValue(ServerSeeker.COUNTRY_MAP.get("un"))
+        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.Country)
         .build()
     );
 
@@ -289,7 +292,7 @@ public class FindNewServersScreen extends WindowScreen {
             switch (geoSearchTypeSetting.get()) {
                 case None -> {}
                 case ASN -> jsonObject.addProperty("asn", asnNumberSetting.get());
-                case Country_Code -> jsonObject.addProperty("country_code", countryCodeSetting.get());
+                case Country -> jsonObject.addProperty("country_code", countrySetting.get().code);
             }
 
             if (crackedSetting.get() != Cracked.Any)

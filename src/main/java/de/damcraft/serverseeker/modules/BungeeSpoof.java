@@ -12,7 +12,6 @@ import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 
 
