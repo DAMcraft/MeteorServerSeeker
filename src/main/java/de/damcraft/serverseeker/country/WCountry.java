@@ -5,8 +5,6 @@ import meteordevelopment.meteorclient.gui.renderer.GuiRenderer;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.renderer.Texture;
 
-import java.util.EmptyStackException;
-
 public class WCountry extends WWidget {
 
     private Country country;

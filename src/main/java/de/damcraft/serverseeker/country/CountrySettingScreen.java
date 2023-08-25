@@ -3,15 +3,9 @@ package de.damcraft.serverseeker.country;
 import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
-import meteordevelopment.meteorclient.gui.widgets.WItemWithLabel;
-import meteordevelopment.meteorclient.gui.widgets.WLabel;
-import meteordevelopment.meteorclient.gui.widgets.WTexture;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
-import meteordevelopment.meteorclient.utils.misc.Names;
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;

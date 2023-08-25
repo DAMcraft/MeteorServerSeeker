@@ -1,14 +1,8 @@
 package de.damcraft.serverseeker.country;
 
-import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.gui.renderer.packer.GuiTexture;
-import meteordevelopment.meteorclient.gui.renderer.packer.TexturePacker;
 import meteordevelopment.meteorclient.renderer.Texture;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.lwjgl.BufferUtils;
 
@@ -16,8 +10,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static meteordevelopment.meteorclient.MeteorClient.LOG;
@@ -34,8 +26,6 @@ public class Country {
         code = code.toLowerCase();
         this.name = name;
         this.code = code;
-
-        GuiTexture tmp_image;
         Identifier identifier = new Identifier("serverseeker", "textures/flags/" + code + ".png");
         Optional<Resource> tmp_resource = mc.getResourceManager().getResource(identifier);
         if (tmp_resource.isEmpty()) {

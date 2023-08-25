@@ -31,7 +31,6 @@ public class ServerSeeker extends MeteorAddon {
      */
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category CATEGORY = new Category("ServerSeeker", Items.SPYGLASS.getDefaultStack());
-    public static final File FOLDER = FabricLoader.getInstance().getGameDir().resolve("serverseeker").toFile();
     public static final Map<String, Country> COUNTRY_MAP = new HashMap<>();
     @Override
     public void onInitialize() {
@@ -47,10 +46,6 @@ public class ServerSeeker extends MeteorAddon {
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
             CountrySetting.countrySettingW(table, (CountrySetting) setting, theme);
         });
-    }
-
-    private SettingsWidgetFactory.Factory countrySettingW(GuiTheme table, Object setting) {
-        return null;
     }
     @Override
     public void onRegisterCategories() {
