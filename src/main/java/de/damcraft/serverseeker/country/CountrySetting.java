@@ -1,6 +1,8 @@
 package de.damcraft.serverseeker.country;
 
+import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.gui.GuiTheme;
+import meteordevelopment.meteorclient.gui.renderer.GuiRenderer;
 import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
@@ -40,6 +42,13 @@ public class CountrySetting extends Setting<Country> {
             });
 
             mc.setScreen(screen);
+        };
+
+        WButton reset = list.add(theme.button(GuiRenderer.RESET)).expandCellX().right().widget();
+        reset.action = () -> {
+            setting.reset();
+            country.set(ServerSeeker.COUNTRY_MAP.get("un"));
+            nameLabel.set("Any");
         };
     }
 
