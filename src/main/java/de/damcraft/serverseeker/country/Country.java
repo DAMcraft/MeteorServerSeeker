@@ -68,5 +68,7 @@ public class Country {
         }
     }
 
-
+    public boolean equals(Country country) {
+        return this.code.equals(country.code);
+    }
 }

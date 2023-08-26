@@ -3,9 +3,11 @@ package de.damcraft.serverseeker.country;
 import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
+import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
+import meteordevelopment.meteorclient.utils.render.color.Color;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -57,12 +59,14 @@ public class CountrySettingScreen extends WindowScreen {
 
         for (Country country : countryArray) {
             if (setting.filter != null && !setting.filter.test(country)) continue;
+            boolean isSelected = country.equals(setting.get());
             if (!filterText.isEmpty() && (
                 !StringUtils.containsIgnoreCase(country.name, filterText) && !StringUtils.containsIgnoreCase(country.code, filterText)
             )) continue;
             table.add(new WCountry(country)).widget();
 
-            table.add(theme.label(country.name)).widget();
+            WLabel label = table.add(theme.label(country.name)).widget();
+            if (isSelected) label.color = Color.GREEN;
 
             WButton select = table.add(theme.button("Select")).expandCellX().right().widget();
             select.action = () -> {

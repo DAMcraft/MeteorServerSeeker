@@ -189,7 +189,7 @@ public class FindNewServersScreen extends WindowScreen {
     private final Setting<GeoSearchType> geoSearchTypeSetting = sg.add(new EnumSetting.Builder<GeoSearchType>()
         .name("geo-search-type")
         .description("Whether to search by ASN or country code")
-        .defaultValue(GeoSearchType.None)
+        .defaultValue(GeoSearchType.Country)
         .build()
     );
 
