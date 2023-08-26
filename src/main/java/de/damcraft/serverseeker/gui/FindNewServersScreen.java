@@ -292,7 +292,11 @@ public class FindNewServersScreen extends WindowScreen {
             switch (geoSearchTypeSetting.get()) {
                 case None -> {}
                 case ASN -> jsonObject.addProperty("asn", asnNumberSetting.get());
-                case Country -> jsonObject.addProperty("country_code", countrySetting.get().code);
+                case Country -> {
+                    if (!countrySetting.get().name.equalsIgnoreCase("any")) {
+                        jsonObject.addProperty("country_code", countrySetting.get().code);
+                    }
+                }
             }
 
             if (crackedSetting.get() != Cracked.Any)
