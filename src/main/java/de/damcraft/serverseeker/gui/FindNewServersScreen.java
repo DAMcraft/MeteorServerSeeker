@@ -264,9 +264,8 @@ public class FindNewServersScreen extends WindowScreen {
                     jsonArray.add(atMostOnlinePlayersSetting.get());
                     jsonObject.add("online_players", jsonArray);
                 }
-                case Equals -> {
-                    jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
-                }
+                case Equals -> jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
+
             }
 
             switch (maxPlayersNumTypeSetting.get()) {
@@ -290,9 +289,7 @@ public class FindNewServersScreen extends WindowScreen {
                     jsonArray.add(atMostMaxPlayersSetting.get());
                     jsonObject.add("max_players", jsonArray);
                 }
-                case Equals -> {
-                    jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
-                }
+                case Equals -> jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
             }
 
             switch (geoSearchTypeSetting.get()) {
@@ -400,9 +397,8 @@ public class FindNewServersScreen extends WindowScreen {
                     WButton joinServerButton = theme.button("Join Server");
                     HostAndPort hap = HostAndPort.fromString(serverIP);
 
-                    joinServerButton.action = () -> {
-                        ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
-                    };
+                    joinServerButton.action = ()
+                        -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
 
                     table.add(addServerButton);
                     table.add(joinServerButton);
