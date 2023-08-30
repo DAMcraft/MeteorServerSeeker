@@ -27,9 +27,6 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
-
 public class FindNewServersScreen extends WindowScreen {
     private int timer;
     public WButton findButton;
