@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
+import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
@@ -136,7 +137,8 @@ public class FindPlayerScreen extends WindowScreen {
                 WButton addServerButton = theme.button("Add Server");
 
                 addServerButton.action = () -> {
-                    addServer(serverIP, playerName);
+                    ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
+                    MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                     addServerButton.visible = false;
                 };
 
@@ -144,17 +146,6 @@ public class FindPlayerScreen extends WindowScreen {
                 table.row();
             }
         };
-    }
-
-    private void addServer(String ip, String playerName) {
-        ServerInfo info = new ServerInfo("ServerSeeker " + ip + " (Player: " + playerName + ")", ip, false);
-
-        // Add server to list
-        this.multiplayerScreen.getServerList().add(info, false);
-        this.multiplayerScreen.getServerList().saveFile();
-
-        // Reload widget
-        ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
     }
 
     private void addAllServers(JsonArray servers) {

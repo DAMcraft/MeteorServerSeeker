@@ -10,9 +10,11 @@ import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
+import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
+import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
@@ -364,6 +366,36 @@ public class FindNewServersScreen extends WindowScreen {
                     if (this.client == null) return;
                     client.setScreen(this.multiplayerScreen);
                 };
+
+                WTable table = add(theme.table()).widget();
+
+                table.add(theme.label("Server IP"));
+
+                table.row();
+
+                table.add(theme.horizontalSeparator()).expandX();
+                table.row();
+
+
+                for (int i = 0; i < servers.size(); i++) {
+                    JsonObject server = servers.get(i).getAsJsonObject();
+                    String serverIP = server.get("server").getAsString();
+
+
+                    table.add(theme.label(serverIP));
+
+                    WButton addServerButton = theme.button("Add Server");
+
+                    addServerButton.action = () -> {
+                        System.out.println(multiplayerScreen.getServerList() == null);
+                        ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, false);
+                        MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
+                        addServerButton.visible = false;
+                    };
+
+                    table.add(addServerButton);
+                    table.row();
+                }
                 this.locked = false;
             });
         };
