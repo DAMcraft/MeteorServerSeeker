@@ -379,7 +379,7 @@ public class FindNewServersScreen extends WindowScreen {
                 for (int i = 0; i < servers.size(); i++) {
                     JsonObject server = servers.get(i).getAsJsonObject();
                     String serverIP = server.get("server").getAsString();
-                    String serverVersion = server.get("verion").getAsString();
+                    String serverVersion = server.get("version").getAsString();
 
                     table.add(theme.label(serverIP));
                     table.add(theme.label(serverVersion));
