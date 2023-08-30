@@ -1,5 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
+import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -13,7 +14,11 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
 import java.time.Instant;
@@ -120,6 +125,7 @@ public class FindPlayerScreen extends WindowScreen {
 
 
             for (int i = 0; i < data.size(); i++) {
+                if (i > 0) table.row();
                 JsonObject server = data.get(i).getAsJsonObject();
                 String serverIP = server.get("server").getAsString();
                 String playerName = server.get("name").getAsString();
@@ -134,15 +140,20 @@ public class FindPlayerScreen extends WindowScreen {
                 table.add(theme.label(playerLastSeenFormatted));
 
                 WButton addServerButton = theme.button("Add Server");
-
                 addServerButton.action = () -> {
                     ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
                     MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                     addServerButton.visible = false;
                 };
 
+                HostAndPort hap = HostAndPort.fromString(serverIP);
+                WButton joinServerButton = theme.button("Join Server");
+                joinServerButton.action = () -> {
+                    ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+                };
+
                 table.add(addServerButton);
-                table.row();
+                table.add(joinServerButton);
             }
         };
     }

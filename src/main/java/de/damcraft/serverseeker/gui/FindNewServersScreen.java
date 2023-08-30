@@ -1,5 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
+import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -19,8 +20,15 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FindNewServersScreen extends WindowScreen {
     private int timer;
@@ -377,25 +385,32 @@ public class FindNewServersScreen extends WindowScreen {
 
 
                 for (int i = 0; i < servers.size(); i++) {
+                    if(i > 0) table.row();
                     JsonObject server = servers.get(i).getAsJsonObject();
-                    String serverIP = server.get("server").getAsString();
+                    final String serverIP = server.get("server").getAsString();
                     String serverVersion = server.get("version").getAsString();
 
                     table.add(theme.label(serverIP));
                     table.add(theme.label(serverVersion));
 
                     WButton addServerButton = theme.button("Add Server");
-
                     addServerButton.action = () -> {
                         System.out.println(multiplayerScreen.getServerList() == null);
                         ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, false);
                         MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                         addServerButton.visible = false;
                     };
+                    WButton joinServerButton = theme.button("Join Server");
+                    HostAndPort hap = HostAndPort.fromString(serverIP);
+
+                    joinServerButton.action = () -> {
+                        ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+                    };
 
                     table.add(addServerButton);
-                    table.row();
+                    table.add(joinServerButton);
                 }
+
                 this.locked = false;
             });
         };
