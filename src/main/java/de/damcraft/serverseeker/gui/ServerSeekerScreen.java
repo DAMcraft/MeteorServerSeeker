@@ -2,7 +2,7 @@ package de.damcraft.serverseeker.gui;
 
 import de.damcraft.serverseeker.DiscordAvatar;
 import de.damcraft.serverseeker.ServerSeekerSystem;
-import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
+import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
@@ -96,8 +96,9 @@ public class ServerSeekerScreen extends WindowScreen {
                 i--;
             }
         }
-        this.multiplayerScreen.getServerList().saveFile();
-        ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+
+        MultiplayerScreenUtil.saveList(multiplayerScreen);
+        MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
 
         client.setScreen(this.multiplayerScreen);
     }

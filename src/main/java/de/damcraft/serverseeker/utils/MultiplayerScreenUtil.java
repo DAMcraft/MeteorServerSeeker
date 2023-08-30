@@ -12,11 +12,10 @@ public class MultiplayerScreenUtil {
         mps.getServerList().saveFile();
         mpsAccessor.getServerListWidget().setServers(mps.getServerList());
     }
-    public static void addInfoToServerList(MultiplayerScreen mps, ServerInfo info, boolean save) {
+    public static void addInfoToServerList(MultiplayerScreen mps, ServerInfo info, boolean reload) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
         mps.getServerList().add(info, false);
-        if (save) mps.getServerList().saveFile();
-        mpsAccessor.getServerListWidget().setServers(mps.getServerList());
+        if (reload) mpsAccessor.getServerListWidget().setServers(mps.getServerList());
     }
 
     public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip) {
@@ -26,11 +25,19 @@ public class MultiplayerScreenUtil {
         mpsAccessor.getServerListWidget().setServers(mps.getServerList());
         mps.getServerList().saveFile();
     }
-    public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip, boolean save) {
+    public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip, boolean reload) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
         ServerInfo info = new ServerInfo(name, ip, false);
         mps.getServerList().add(info, false);
+        if (reload) mpsAccessor.getServerListWidget().setServers(mps.getServerList());
+    }
+
+    public static void reloadServerList(MultiplayerScreen mps) {
+        MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
         mpsAccessor.getServerListWidget().setServers(mps.getServerList());
-        if (save) mps.getServerList().saveFile();
+    }
+
+    public static void saveList(MultiplayerScreen mps) {
+        mps.getServerList().saveFile();
     }
 }

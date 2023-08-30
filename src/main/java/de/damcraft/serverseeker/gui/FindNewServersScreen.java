@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
@@ -352,15 +351,13 @@ public class FindNewServersScreen extends WindowScreen {
                     for (JsonElement server : servers) {
                         String ip = server.getAsJsonObject().get("server").getAsString();
 
-                        ServerInfo info = new ServerInfo("ServerSeeker " + ip, ip, false);
-
                         // Add server to list
-                        this.multiplayerScreen.getServerList().add(info, false);
+                        MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
                     }
-                    this.multiplayerScreen.getServerList().saveFile();
+                    MultiplayerScreenUtil.saveList(multiplayerScreen);
 
                     // Reload widget
-                    ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+                    MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
 
                     // Close screen
                     if (this.client == null) return;
@@ -370,6 +367,8 @@ public class FindNewServersScreen extends WindowScreen {
                 WTable table = add(theme.table()).widget();
 
                 table.add(theme.label("Server IP"));
+                table.add(theme.label("Version"));
+
 
                 table.row();
 
@@ -380,9 +379,10 @@ public class FindNewServersScreen extends WindowScreen {
                 for (int i = 0; i < servers.size(); i++) {
                     JsonObject server = servers.get(i).getAsJsonObject();
                     String serverIP = server.get("server").getAsString();
-
+                    String serverVersion = server.get("verion").getAsString();
 
                     table.add(theme.label(serverIP));
+                    table.add(theme.label(serverVersion));
 
                     WButton addServerButton = theme.button("Add Server");
 

@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -154,10 +153,9 @@ public class FindPlayerScreen extends WindowScreen {
             String serverIP = server.get("server").getAsString();
             String playerName = server.get("name").getAsString();
             ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
-            this.multiplayerScreen.getServerList().add(info, false);
+            MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info, false);
         }
-        this.multiplayerScreen.getServerList().saveFile();
-        ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+        MultiplayerScreenUtil.saveList(multiplayerScreen);
         if (client == null) return;
         client.setScreen(this.multiplayerScreen);
     }
