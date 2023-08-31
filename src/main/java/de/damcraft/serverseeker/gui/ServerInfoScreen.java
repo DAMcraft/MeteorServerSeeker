@@ -7,6 +7,12 @@ import de.damcraft.serverseeker.SmallHttp;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.network.ServerAddress;
+import net.minecraft.client.network.ServerInfo;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -14,7 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class ServerInfoScreen extends WindowScreen {
-    private String serverIp;
+    private final String serverIp;
+
     public ServerInfoScreen(String serverIp) {
         super(GuiThemes.get(), "Server Info: " + serverIp);
         this.serverIp = serverIp;
@@ -95,6 +102,11 @@ public class ServerInfoScreen extends WindowScreen {
 
         for (int i = 0; i < players.size(); i++) {
             if (i > 0) playersTable.row();
+            else {
+                playersTable.add(theme.label(""));
+                playersTable.row();
+            }
+            ;
             JsonObject player = players.get(i).getAsJsonObject();
             String name = player.get("name").getAsString();
             long playerLastSeen = player.get("last_seen").getAsLong();
@@ -104,5 +116,8 @@ public class ServerInfoScreen extends WindowScreen {
             playersTable.add(theme.label(name + " "));
             playersTable.add(theme.label(lastSeenFormatted + " "));
         }
+        WButton joinServerButton = add(theme.button("Join this Server")).expandX().widget();
+        joinServerButton.action = ()
+            -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
     }
 }
