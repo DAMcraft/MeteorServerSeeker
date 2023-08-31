@@ -31,6 +31,12 @@ public class ServerInfoScreen extends WindowScreen {
         jsonObject.addProperty("port", hap.getPort());
         String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", jsonObject.toString());
         JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
+        String error = resp.has("error") ? resp.get("error").getAsString() : null;
+        if (error != null) {
+            clear();
+            add(theme.label(error)).expandX();
+            return;
+        }
         clear();
 
         JsonElement cracked = resp.get("cracked");
