@@ -379,7 +379,7 @@ public class FindNewServersScreen extends WindowScreen {
 
 
                 for (int i = 0; i < servers.size(); i++) {
-                    if(i > 0) table.row();
+                    if (i > 0) table.row();
                     JsonObject server = servers.get(i).getAsJsonObject();
                     final String serverIP = server.get("server").getAsString();
                     String serverVersion = server.get("version").getAsString();
@@ -394,14 +394,19 @@ public class FindNewServersScreen extends WindowScreen {
                         MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                         addServerButton.visible = false;
                     };
+
                     WButton joinServerButton = theme.button("Join Server");
                     HostAndPort hap = HostAndPort.fromString(serverIP);
 
                     joinServerButton.action = ()
                         -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
 
+                    WButton serverInfoButton = theme.button("Server Info");
+                    serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
+
                     table.add(addServerButton);
                     table.add(joinServerButton);
+                    table.add(serverInfoButton);
                 }
 
                 this.locked = false;
