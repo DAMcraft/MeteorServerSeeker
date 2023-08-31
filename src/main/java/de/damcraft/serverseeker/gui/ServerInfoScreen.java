@@ -76,11 +76,11 @@ public class ServerInfoScreen extends WindowScreen {
 
         dataTable.add(theme.label("Version: "));
         dataTable.add(theme.label(version + " (" + protocol + ")"));
-        dataTable.row();
-        dataTable.row();
 
-        dataTable.add(theme.label("Players:"));
-        dataTable.row();
+        playersTable.add(theme.label(""));
+        playersTable.row();
+        playersTable.add(theme.label("Players:"));
+        playersTable.row();
 
 
         playersTable.add(theme.label("Name "));

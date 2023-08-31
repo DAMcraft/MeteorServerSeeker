@@ -152,8 +152,12 @@ public class FindPlayerScreen extends WindowScreen {
                     ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
                 };
 
+                WButton serverInfoButton = theme.button("Server Info");
+                serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
+
                 table.add(addServerButton);
                 table.add(joinServerButton);
+                table.add(serverInfoButton);
             }
         };
     }
