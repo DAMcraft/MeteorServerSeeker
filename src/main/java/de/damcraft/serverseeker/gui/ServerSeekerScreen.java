@@ -55,31 +55,38 @@ public class ServerSeekerScreen extends WindowScreen {
             ServerSeekerSystem.get().save();
             reload();
         };
-        Gson gson = new Gson();
-        String reqBody = "{\"api_key\":\"" + authToken + "\"}";
-        String userInfoJson = SmallHttp.post("https://api.serverseeker.net/user_info", reqBody);
-        JsonObject userInfo = gson.fromJson(userInfoJson, JsonObject.class);
         WTable userInfoList = add(theme.table()).widget();
+        userInfoList.add(theme.label("Loading..."));
 
-        userInfoList.add(theme.label("Requests made:"));
-        userInfoList.row();
+        new Thread(() -> {
+            Gson gson = new Gson();
+            String reqBody = "{\"api_key\":\"" + authToken + "\"}";
+            String userInfoJson = SmallHttp.post("https://api.serverseeker.net/user_info", reqBody);
+            JsonObject userInfo = gson.fromJson(userInfoJson, JsonObject.class);
 
-        int whereisRequestsMade = userInfo.get("requests_made_whereis").getAsInt();
-        int whereisRequestsTotal = userInfo.get("requests_per_day_whereis").getAsInt();
-        userInfoList.add(theme.label("Whereis: "));
-        userInfoList.add(theme.label(whereisRequestsMade + "/" + whereisRequestsTotal)).widget().color(whereisRequestsTotal == whereisRequestsMade ? Color.RED : Color.WHITE);
-        userInfoList.row();
+            userInfoList.clear();
 
-        int serversRequestsMade = userInfo.get("requests_made_servers").getAsInt();
-        int serversRequestsTotal = userInfo.get("requests_per_day_servers").getAsInt();
-        userInfoList.add(theme.label("Servers: "));
-        userInfoList.add(theme.label(serversRequestsMade + "/" + serversRequestsTotal)).widget().color(serversRequestsTotal == serversRequestsMade ? Color.RED : Color.WHITE);
-        userInfoList.row();
+            userInfoList.add(theme.label("Requests made:"));
+            userInfoList.row();
 
-        int serverInfoRequestsMade = userInfo.get("requests_made_server_info").getAsInt();
-        int serverInfoRequestsTotal = userInfo.get("requests_per_day_server_info").getAsInt();
-        userInfoList.add(theme.label("Server Info: "));
-        userInfoList.add(theme.label(serverInfoRequestsMade + "/" + serverInfoRequestsTotal)).widget().color(serverInfoRequestsTotal == serverInfoRequestsMade ? Color.RED : Color.WHITE);
+            int whereisRequestsMade = userInfo.get("requests_made_whereis").getAsInt();
+            int whereisRequestsTotal = userInfo.get("requests_per_day_whereis").getAsInt();
+            userInfoList.add(theme.label("Whereis: "));
+            userInfoList.add(theme.label(whereisRequestsMade + "/" + whereisRequestsTotal)).widget().color(whereisRequestsTotal == whereisRequestsMade ? Color.RED : Color.WHITE);
+            userInfoList.row();
+
+            int serversRequestsMade = userInfo.get("requests_made_servers").getAsInt();
+            int serversRequestsTotal = userInfo.get("requests_per_day_servers").getAsInt();
+            userInfoList.add(theme.label("Servers: "));
+            userInfoList.add(theme.label(serversRequestsMade + "/" + serversRequestsTotal)).widget().color(serversRequestsTotal == serversRequestsMade ? Color.RED : Color.WHITE);
+            userInfoList.row();
+
+            int serverInfoRequestsMade = userInfo.get("requests_made_server_info").getAsInt();
+            int serverInfoRequestsTotal = userInfo.get("requests_per_day_server_info").getAsInt();
+            userInfoList.add(theme.label("Server Info: "));
+            userInfoList.add(theme.label(serverInfoRequestsMade + "/" + serverInfoRequestsTotal)).widget().color(serverInfoRequestsTotal == serverInfoRequestsMade ? Color.RED : Color.WHITE);
+        }).start();
+
 
         WHorizontalList widgetList = add(theme.horizontalList()).expandX().widget();
         WButton newServersButton = widgetList.add(this.theme.button("Find new servers")).expandX().widget();
