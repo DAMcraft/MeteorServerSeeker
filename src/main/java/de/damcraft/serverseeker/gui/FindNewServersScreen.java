@@ -1,5 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
+import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -7,18 +8,23 @@ import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
+import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
+import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
 public class FindNewServersScreen extends WindowScreen {
@@ -258,9 +264,8 @@ public class FindNewServersScreen extends WindowScreen {
                     jsonArray.add(atMostOnlinePlayersSetting.get());
                     jsonObject.add("online_players", jsonArray);
                 }
-                case Equals -> {
-                    jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
-                }
+                case Equals -> jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
+
             }
 
             switch (maxPlayersNumTypeSetting.get()) {
@@ -284,9 +289,7 @@ public class FindNewServersScreen extends WindowScreen {
                     jsonArray.add(atMostMaxPlayersSetting.get());
                     jsonObject.add("max_players", jsonArray);
                 }
-                case Equals -> {
-                    jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
-                }
+                case Equals -> jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
             }
 
             switch (geoSearchTypeSetting.get()) {
@@ -350,20 +353,62 @@ public class FindNewServersScreen extends WindowScreen {
                     for (JsonElement server : servers) {
                         String ip = server.getAsJsonObject().get("server").getAsString();
 
-                        ServerInfo info = new ServerInfo("ServerSeeker " + ip, ip, false);
-
                         // Add server to list
-                        this.multiplayerScreen.getServerList().add(info, false);
+                        MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
                     }
-                    this.multiplayerScreen.getServerList().saveFile();
+                    MultiplayerScreenUtil.saveList(multiplayerScreen);
 
                     // Reload widget
-                    ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+                    MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
 
                     // Close screen
                     if (this.client == null) return;
                     client.setScreen(this.multiplayerScreen);
                 };
+
+                WTable table = add(theme.table()).widget();
+
+                table.add(theme.label("Server IP"));
+                table.add(theme.label("Version"));
+
+
+                table.row();
+
+                table.add(theme.horizontalSeparator()).expandX();
+                table.row();
+
+
+                for (int i = 0; i < servers.size(); i++) {
+                    if (i > 0) table.row();
+                    JsonObject server = servers.get(i).getAsJsonObject();
+                    final String serverIP = server.get("server").getAsString();
+                    String serverVersion = server.get("version").getAsString();
+
+                    table.add(theme.label(serverIP));
+                    table.add(theme.label(serverVersion));
+
+                    WButton addServerButton = theme.button("Add Server");
+                    addServerButton.action = () -> {
+                        System.out.println(multiplayerScreen.getServerList() == null);
+                        ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, false);
+                        MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
+                        addServerButton.visible = false;
+                    };
+
+                    WButton joinServerButton = theme.button("Join Server");
+                    HostAndPort hap = HostAndPort.fromString(serverIP);
+
+                    joinServerButton.action = ()
+                        -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+
+                    WButton serverInfoButton = theme.button("Server Info");
+                    serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
+
+                    table.add(addServerButton);
+                    table.add(joinServerButton);
+                    table.add(serverInfoButton);
+                }
+
                 this.locked = false;
             });
         };

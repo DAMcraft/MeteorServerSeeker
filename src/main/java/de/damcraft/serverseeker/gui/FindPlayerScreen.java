@@ -1,11 +1,12 @@
 package de.damcraft.serverseeker.gui;
 
+import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
+import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
@@ -13,7 +14,11 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
 import java.time.Instant;
@@ -120,6 +125,7 @@ public class FindPlayerScreen extends WindowScreen {
 
 
             for (int i = 0; i < data.size(); i++) {
+                if (i > 0) table.row();
                 JsonObject server = data.get(i).getAsJsonObject();
                 String serverIP = server.get("server").getAsString();
                 String playerName = server.get("name").getAsString();
@@ -134,27 +140,26 @@ public class FindPlayerScreen extends WindowScreen {
                 table.add(theme.label(playerLastSeenFormatted));
 
                 WButton addServerButton = theme.button("Add Server");
-
                 addServerButton.action = () -> {
-                    addServer(serverIP, playerName);
+                    ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
+                    MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                     addServerButton.visible = false;
                 };
 
+                HostAndPort hap = HostAndPort.fromString(serverIP);
+                WButton joinServerButton = theme.button("Join Server");
+                joinServerButton.action = () -> {
+                    ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+                };
+
+                WButton serverInfoButton = theme.button("Server Info");
+                serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
+
                 table.add(addServerButton);
-                table.row();
+                table.add(joinServerButton);
+                table.add(serverInfoButton);
             }
         };
-    }
-
-    private void addServer(String ip, String playerName) {
-        ServerInfo info = new ServerInfo("ServerSeeker " + ip + " (Player: " + playerName + ")", ip, false);
-
-        // Add server to list
-        this.multiplayerScreen.getServerList().add(info, false);
-        this.multiplayerScreen.getServerList().saveFile();
-
-        // Reload widget
-        ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
     }
 
     private void addAllServers(JsonArray servers) {
@@ -163,10 +168,9 @@ public class FindPlayerScreen extends WindowScreen {
             String serverIP = server.get("server").getAsString();
             String playerName = server.get("name").getAsString();
             ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
-            this.multiplayerScreen.getServerList().add(info, false);
+            MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info, false);
         }
-        this.multiplayerScreen.getServerList().saveFile();
-        ((MultiplayerScreenAccessor) this.multiplayerScreen).getServerListWidget().setServers(this.multiplayerScreen.getServerList());
+        MultiplayerScreenUtil.saveList(multiplayerScreen);
         if (client == null) return;
         client.setScreen(this.multiplayerScreen);
     }

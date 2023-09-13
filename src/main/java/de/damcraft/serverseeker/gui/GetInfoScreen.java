@@ -120,7 +120,7 @@ public class GetInfoScreen extends WindowScreen {
             add(theme.label("Attention: The server is NOT cracked!")).expandX();
             add(theme.label("")).expandX();
         }
-        String playersLabel = players.size() == 1 ? "player:" : "players:";
+        String playersLabel = players.size() == 1 ? " player:" : " players:";
         add(theme.label("Found " + players.size() + playersLabel));
 
         WTable table = add(theme.table()).widget();
@@ -137,7 +137,7 @@ public class GetInfoScreen extends WindowScreen {
             JsonObject player = players.get(i).getAsJsonObject();
             String name = player.get("name").getAsString();
             long lastSeen = player.get("last_seen").getAsLong();
-            String lastSeenFormatted = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+            String lastSeenFormatted = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                 .format(Instant.ofEpochSecond(lastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
 
             table.add(theme.label(name + " "));
