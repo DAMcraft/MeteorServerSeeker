@@ -13,6 +13,8 @@ import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
+import meteordevelopment.meteorclient.gui.utils.Cell;
+import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
@@ -357,7 +359,6 @@ public class FindNewServersScreen extends WindowScreen {
                         MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
                     }
                     MultiplayerScreenUtil.saveList(multiplayerScreen);
-
                     // Reload widget
                     MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
 
@@ -376,16 +377,19 @@ public class FindNewServersScreen extends WindowScreen {
 
                 table.add(theme.horizontalSeparator()).expandX();
                 table.row();
+                System.out.println("A");
 
+                this.taskAfterRender = () -> System.out.println("ok");
 
                 for (int i = 0; i < servers.size(); i++) {
                     if (i > 0) table.row();
                     JsonObject server = servers.get(i).getAsJsonObject();
-                    final String serverIP = server.get("server").getAsString();
+                    String serverIP = server.get("server").getAsString();
                     String serverVersion = server.get("version").getAsString();
 
-                    table.add(theme.label(serverIP));
-                    table.add(theme.label(serverVersion));
+                    WLabel l = theme.label(serverIP);
+                    table.add(l).widget();
+                    table.add(theme.label(serverVersion)).widget();
 
                     WButton addServerButton = theme.button("Add Server");
                     addServerButton.action = () -> {
@@ -394,19 +398,19 @@ public class FindNewServersScreen extends WindowScreen {
                         MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                         addServerButton.visible = false;
                     };
+                    table.add(addServerButton).widget();
+
 
                     WButton joinServerButton = theme.button("Join Server");
                     HostAndPort hap = HostAndPort.fromString(serverIP);
 
                     joinServerButton.action = ()
                         -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+                    table.add(joinServerButton).widget();
 
                     WButton serverInfoButton = theme.button("Server Info");
                     serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
-
-                    table.add(addServerButton);
-                    table.add(joinServerButton);
-                    table.add(serverInfoButton);
+                    table.add(serverInfoButton).widget();
                 }
 
                 this.locked = false;
