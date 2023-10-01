@@ -387,8 +387,7 @@ public class FindNewServersScreen extends WindowScreen {
                     String serverIP = server.get("server").getAsString();
                     String serverVersion = server.get("version").getAsString();
 
-                    WLabel l = theme.label(serverIP);
-                    table.add(l).widget();
+                    table.add(theme.label(serverIP)).widget();
                     table.add(theme.label(serverVersion)).widget();
 
                     WButton addServerButton = theme.button("Add Server");
