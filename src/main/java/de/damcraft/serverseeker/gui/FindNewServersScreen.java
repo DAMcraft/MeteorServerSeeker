@@ -377,7 +377,6 @@ public class FindNewServersScreen extends WindowScreen {
 
                 table.add(theme.horizontalSeparator()).expandX();
                 table.row();
-                System.out.println("A");
 
                 this.taskAfterRender = () -> System.out.println("ok");
 
