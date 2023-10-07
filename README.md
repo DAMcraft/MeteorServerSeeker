@@ -1,8 +1,16 @@
+<a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/3.0.0/server-seeker-3.0.0.jar">
+    <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000></img>
+</a>
 
+## Installing
+1. Download Meteor Client (https://meteorclient.com/download), for help see https://meteorclient.com/faq/installation
+2. Download Meteor ServerSeeker using the comically large button above and drop it in your mods folder!
+    
+    
 <h1 align="center"> Official ServerSeeker addon for meteor </h1>
 
 <div align="center">
-    <h3>Offical ServerSeeker discord server (has a bot with a few more functionalities, like searching by country)</h3>
+    <h3>Offical ServerSeeker discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
     <a href="https://discord.gg/serverseeker-1087081486747971705">
     <img src="https://invidget.switchblade.xyz/serverseeker-1087081486747971705">
     </a>
@@ -13,6 +21,8 @@
 
 <a href="https://serverseeker.net/docs.html"> ![Powered by ServerSeeker](https://img.shields.io/badge/Powered%20by%20the%20ServerSeeker--API-%232b2b2b.svg?style=for-the-badge&logo=python&logoColor=18d3ae)</a>
 ![Github Stars](https://img.shields.io/github/stars/DAMcraft/MeteorServerSeeker?style=for-the-badge&logo=github&labelColor=2b2b2b&color=2b2b2b)
+
+
 ## How to use:
 ### Logging in:
 Click on the big button saying <b>"ServerSeeker"</b> <br />  
