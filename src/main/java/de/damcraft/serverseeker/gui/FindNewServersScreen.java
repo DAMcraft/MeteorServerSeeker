@@ -390,7 +390,7 @@ public class FindNewServersScreen extends WindowScreen {
                     WButton addServerButton = theme.button("Add Server");
                     addServerButton.action = () -> {
                         System.out.println(multiplayerScreen.getServerList() == null);
-                        ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, false);
+                        ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
                         MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                         addServerButton.visible = false;
                     };
@@ -399,7 +399,7 @@ public class FindNewServersScreen extends WindowScreen {
                     HostAndPort hap = HostAndPort.fromString(serverIP);
 
                     joinServerButton.action = ()
-                        -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+                        -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false);
 
                     WButton serverInfoButton = theme.button("Server Info");
                     serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));

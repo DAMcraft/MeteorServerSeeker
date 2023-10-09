@@ -141,7 +141,7 @@ public class FindPlayerScreen extends WindowScreen {
 
                 WButton addServerButton = theme.button("Add Server");
                 addServerButton.action = () -> {
-                    ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
+                    ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, ServerInfo.ServerType.OTHER);
                     MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                     addServerButton.visible = false;
                 };
@@ -149,7 +149,7 @@ public class FindPlayerScreen extends WindowScreen {
                 HostAndPort hap = HostAndPort.fromString(serverIP);
                 WButton joinServerButton = theme.button("Join Server");
                 joinServerButton.action = () -> {
-                    ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), false), false);
+                    ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false);
                 };
 
                 WButton serverInfoButton = theme.button("Server Info");
@@ -167,7 +167,7 @@ public class FindPlayerScreen extends WindowScreen {
             JsonObject server = servers.get(i).getAsJsonObject();
             String serverIP = server.get("server").getAsString();
             String playerName = server.get("name").getAsString();
-            ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, false);
+            ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, ServerInfo.ServerType.OTHER);
             MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info, false);
         }
         MultiplayerScreenUtil.saveList(multiplayerScreen);

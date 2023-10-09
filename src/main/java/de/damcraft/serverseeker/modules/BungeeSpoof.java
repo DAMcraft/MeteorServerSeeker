@@ -39,7 +39,7 @@ public class BungeeSpoof extends Module {
             HandshakeC2SAccessor packet = (HandshakeC2SAccessor) event.packet;
             if (packet.getNetworkState().getId() != 2) return;
             ServerSeeker.LOG.info("Spoofing bungeecord handshake packet");
-            String spoofedUUID = mc.getSession().getUuid();
+            String spoofedUUID = mc.getSession().getUuidOrNull().toString();
 
             String URL = "https://api.mojang.com/users/profiles/minecraft/" + mc.getSession().getUsername();
 
