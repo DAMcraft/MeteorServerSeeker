@@ -47,7 +47,7 @@ public class CountrySetting extends Setting<Country> {
         WButton reset = list.add(theme.button(GuiRenderer.RESET)).expandCellX().right().widget();
         reset.action = () -> {
             setting.reset();
-            country.set(ServerSeeker.COUNTRY_MAP.get("un"));
+            country.set(ServerSeeker.COUNTRY_MAP.get("UN"));
             nameLabel.set("Any");
         };
     }

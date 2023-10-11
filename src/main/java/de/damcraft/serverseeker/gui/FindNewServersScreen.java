@@ -211,7 +211,7 @@ public class FindNewServersScreen extends WindowScreen {
     private final Setting<Country> countrySetting = sg.add(new CountrySetting.Builder()
         .name("country")
         .description("The country the server should be located in")
-        .defaultValue(ServerSeeker.COUNTRY_MAP.get("un"))
+        .defaultValue(ServerSeeker.COUNTRY_MAP.get("UN"))
         .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.Country)
         .build()
     );

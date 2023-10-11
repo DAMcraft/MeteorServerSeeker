@@ -1,9 +1,7 @@
 package de.damcraft.serverseeker.country;
 
-import meteordevelopment.meteorclient.renderer.Texture;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
-import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -17,9 +15,10 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 public class Country {
     public final String name;
     public final String code;
-    public final Texture image;
+    public final byte[] image;
+    public BufferedImage bufferedImage = null;
 
-    Country(String name, String code) {
+    public Country(String name, String code) {
 
         System.out.println("Creating country: " + code + " " + name);
         code = code.toLowerCase();
@@ -60,9 +59,8 @@ public class Country {
                     }
                 }
             }
-            Texture texture = new Texture();
-            texture.upload(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferUtils.createByteBuffer(data.length).put(data), Texture.Format.RGB, Texture.Filter.Nearest, Texture.Filter.Nearest, false);
-            this.image = texture;
+            this.image = data;
+            this.bufferedImage = bufferedImage;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -10,11 +10,10 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.item.*;
 import org.slf4j.Logger;
+import de.damcraft.serverseeker.country.Countries;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static de.damcraft.serverseeker.country.Countries.COUNTRIES;
 
 public class ServerSeeker extends MeteorAddon {
     /*
@@ -22,7 +21,7 @@ public class ServerSeeker extends MeteorAddon {
     (creates features matching the RegEx '(?:add\(new )([^(]+)(?:\([^)]*)\)\)', as anticope checks for that.
     add(new Find servers with many parameters, for example: Cracked, Description, Player count, much more...())
     add(new Server database with around 1.000.000 servers!())
-    add(new Over 40.000.000 players tracked!())
+    add(new Over 80.000.000 players tracked!())
     add(new Search for ANY server you want!())
     add(new Join misconfigured BungeeCord backends with any name you want!())
      */
@@ -33,12 +32,10 @@ public class ServerSeeker extends MeteorAddon {
     public void onInitialize() {
         LOG.info("Loaded the ServerSeeker addon!");
 
+        // Load countries
+        COUNTRY_MAP.put("UN", new Country("Any", "UN"));
+        Countries.init();
 
-        // Map of country codes to country
-
-        for (Country country : COUNTRIES) {
-            COUNTRY_MAP.put(country.code, country);
-        }
         Modules.get().add( new BungeeSpoof() );
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
             CountrySetting.countrySettingW(table, (CountrySetting) setting, theme);
