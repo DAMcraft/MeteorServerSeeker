@@ -23,7 +23,7 @@ public class DiscordAuth {
     // Store as a string because it's too big and I don't want to import unnecessary libraries if I join it to a String anyway
     private static final String clientId = "1087083964432404590";
 
-    private static final String url =
+    public static final String url =
         "https://discord.com/api/oauth2/authorize" +
             "?client_id=" + clientId +
             "&redirect_uri=http%3A%2F%2F127.0.0.1%3A" + port + "%2F" +
