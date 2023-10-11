@@ -5,6 +5,8 @@ import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 
+import static meteordevelopment.meteorclient.MeteorClient.mc;
+
 public class LoginWithDiscordScreen extends WindowScreen {
 
     private boolean canClose = false;
@@ -34,6 +36,13 @@ public class LoginWithDiscordScreen extends WindowScreen {
             close();
         });
         add(theme.label("Please authenticate with Discord in your browser."));
+
+        add(theme.label("The browser didn't open? Click below to copy the link and open it manually")).expandX();
+        WButton copy = add(theme.button("Copy")).expandX().widget();
+        copy.action = () -> {
+            String url = DiscordAuth.url;
+            mc.keyboard.setClipboard(url);
+        };
 
         WButton cancel = add(theme.button("Cancel")).expandX().widget();
         cancel.action = () -> {
