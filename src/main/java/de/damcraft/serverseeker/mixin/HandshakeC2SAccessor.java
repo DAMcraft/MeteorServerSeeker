@@ -1,6 +1,7 @@
 package de.damcraft.serverseeker.mixin;
 
 import net.minecraft.network.NetworkState;
+import net.minecraft.network.packet.c2s.handshake.ConnectionIntent;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -13,7 +14,7 @@ public interface HandshakeC2SAccessor {
     void setAddress(String address);
 
     @Accessor("intendedState")
-    NetworkState getNetworkState();
+    ConnectionIntent getNetworkState();
 
     @Accessor("address")
     String getAddress();

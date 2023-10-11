@@ -20,14 +20,14 @@ public class MultiplayerScreenUtil {
 
     public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        ServerInfo info = new ServerInfo(name, ip, false);
+        ServerInfo info = new ServerInfo(name, ip, ServerInfo.ServerType.OTHER);
         mps.getServerList().add(info, false);
         mpsAccessor.getServerListWidget().setServers(mps.getServerList());
         mps.getServerList().saveFile();
     }
     public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip, boolean reload) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        ServerInfo info = new ServerInfo(name, ip, false);
+        ServerInfo info = new ServerInfo(name, ip, ServerInfo.ServerType.OTHER);
         mps.getServerList().add(info, false);
         if (reload) mpsAccessor.getServerListWidget().setServers(mps.getServerList());
     }
