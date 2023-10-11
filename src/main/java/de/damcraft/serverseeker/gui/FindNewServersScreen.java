@@ -18,7 +18,6 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.Systems;
-import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
@@ -85,13 +84,13 @@ public class FindNewServersScreen extends WindowScreen {
     );
 
     private final Setting<Integer> equalsOnlinePlayersSetting = sg.add(new IntSetting.Builder()
-            .name("online-player-equals")
-            .description("The amount of online players the server should have")
-            .defaultValue(2)
-            .min(0)
-            .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals))
-            .noSlider()
-            .build()
+        .name("online-player-equals")
+        .description("The amount of online players the server should have")
+        .defaultValue(2)
+        .min(0)
+        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.Equals))
+        .noSlider()
+        .build()
     );
 
 
@@ -124,13 +123,13 @@ public class FindNewServersScreen extends WindowScreen {
     );
 
     private final Setting<Integer> equalsMaxPlayersSetting = sg.add(new IntSetting.Builder()
-            .name("max-players-equals")
-            .description("The amount of max players the server should have")
-            .defaultValue(2)
-            .min(0)
-            .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals))
-            .noSlider()
-            .build()
+        .name("max-players-equals")
+        .description("The amount of max players the server should have")
+        .defaultValue(2)
+        .min(0)
+        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.Equals))
+        .noSlider()
+        .build()
     );
 
 
@@ -293,7 +292,8 @@ public class FindNewServersScreen extends WindowScreen {
             }
 
             switch (geoSearchTypeSetting.get()) {
-                case None -> {}
+                case None -> {
+                }
                 case ASN -> jsonObject.addProperty("asn", asnNumberSetting.get());
                 case Country -> {
                     if (!countrySetting.get().name.equalsIgnoreCase("any")) {
@@ -321,96 +321,93 @@ public class FindNewServersScreen extends WindowScreen {
 
 
             this.locked = true;
-            MeteorExecutor.execute(() -> {
-                String json = jsonObject.toString();
-                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
+            String json = jsonObject.toString();
+            String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
 
-                Gson gson = new Gson();
-                JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
+            Gson gson = new Gson();
+            JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
 
-                // Set error message if there is one
-                String error = resp.has("error") ? resp.get("error").getAsString() : null;
-                if (error != null) {
-                    clear();
-                    add(theme.label(error)).expandX();
-                    WButton backButton = add(theme.button("Back")).expandX().widget();
-                    backButton.action = this::reload;
-                    this.locked = false;
-                    return;
-                }
+            // Set error message if there is one
+            String error = resp.has("error") ? resp.get("error").getAsString() : null;
+            if (error != null) {
                 clear();
-                JsonArray servers = resp.getAsJsonArray("data");
-                if (servers.isEmpty()) {
-                    add(theme.label("No servers found")).expandX();
-                    WButton backButton = add(theme.button("Back")).expandX().widget();
-                    backButton.action = this::reload;
-                    this.locked = false;
-                    return;
+                add(theme.label(error)).expandX();
+                WButton backButton = add(theme.button("Back")).expandX().widget();
+                backButton.action = this::reload;
+                this.locked = false;
+                return;
+            }
+            clear();
+            JsonArray servers = resp.getAsJsonArray("data");
+            if (servers.isEmpty()) {
+                add(theme.label("No servers found")).expandX();
+                WButton backButton = add(theme.button("Back")).expandX().widget();
+                backButton.action = this::reload;
+                this.locked = false;
+                return;
+            }
+            add(theme.label("Found " + servers.size() + " servers")).expandX();
+            WButton addAllButton = add(theme.button("Add all")).expandX().widget();
+            addAllButton.action = () -> {
+                for (JsonElement server : servers) {
+                    String ip = server.getAsJsonObject().get("server").getAsString();
+
+                    // Add server to list
+                    MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
                 }
-                add(theme.label("Found " + servers.size() + " servers")).expandX();
-                WButton addAllButton = add(theme.button("Add all")).expandX().widget();
-                addAllButton.action = () -> {
-                    for (JsonElement server : servers) {
-                        String ip = server.getAsJsonObject().get("server").getAsString();
+                MultiplayerScreenUtil.saveList(multiplayerScreen);
 
-                        // Add server to list
-                        MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
-                    }
-                    MultiplayerScreenUtil.saveList(multiplayerScreen);
+                // Reload widget
+                MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
 
-                    // Reload widget
-                    MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
+                // Close screen
+                if (this.client == null) return;
+                client.setScreen(this.multiplayerScreen);
+            };
 
-                    // Close screen
-                    if (this.client == null) return;
-                    client.setScreen(this.multiplayerScreen);
+            WTable table = add(theme.table()).widget();
+
+            table.add(theme.label("Server IP"));
+            table.add(theme.label("Version"));
+
+
+            table.row();
+
+            table.add(theme.horizontalSeparator()).expandX().widget();
+            table.row();
+
+            for (int i = 0; i < servers.size(); i++) {
+                if (i > 0) table.row();
+                JsonObject server = servers.get(i).getAsJsonObject();
+                final String serverIP = server.get("server").getAsString();
+                String serverVersion = server.get("version").getAsString();
+
+                table.add(theme.label(serverIP));
+                table.add(theme.label(serverVersion));
+
+                WButton addServerButton = theme.button("Add Server");
+                addServerButton.action = () -> {
+                    System.out.println(multiplayerScreen.getServerList() == null);
+                    ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
+                    MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
+                    addServerButton.visible = false;
                 };
 
-                WTable table = add(theme.table()).widget();
+                WButton joinServerButton = theme.button("Join Server");
+                HostAndPort hap = HostAndPort.fromString(serverIP);
 
-                table.add(theme.label("Server IP"));
-                table.add(theme.label("Version"));
+                joinServerButton.action = ()
+                    -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false);
 
+                WButton serverInfoButton = theme.button("Server Info");
+                serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
 
-                table.row();
+                table.add(addServerButton);
+                table.add(joinServerButton);
+                table.add(serverInfoButton);
+            }
 
-                table.add(theme.horizontalSeparator()).expandX();
-                table.row();
-
-
-                for (int i = 0; i < servers.size(); i++) {
-                    if (i > 0) table.row();
-                    JsonObject server = servers.get(i).getAsJsonObject();
-                    final String serverIP = server.get("server").getAsString();
-                    String serverVersion = server.get("version").getAsString();
-
-                    table.add(theme.label(serverIP));
-                    table.add(theme.label(serverVersion));
-
-                    WButton addServerButton = theme.button("Add Server");
-                    addServerButton.action = () -> {
-                        System.out.println(multiplayerScreen.getServerList() == null);
-                        ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
-                        MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
-                        addServerButton.visible = false;
-                    };
-
-                    WButton joinServerButton = theme.button("Join Server");
-                    HostAndPort hap = HostAndPort.fromString(serverIP);
-
-                    joinServerButton.action = ()
-                        -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false);
-
-                    WButton serverInfoButton = theme.button("Server Info");
-                    serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
-
-                    table.add(addServerButton);
-                    table.add(joinServerButton);
-                    table.add(serverInfoButton);
-                }
-
-                this.locked = false;
-            });
+            this.locked = false;
         };
     }
 
@@ -423,13 +420,10 @@ public class FindNewServersScreen extends WindowScreen {
             if (timer > 2) {
                 findButton.set(getNext(findButton));
                 timer = 0;
-            }
-            else {
+            } else {
                 timer++;
             }
-        }
-
-        else if (!findButton.getText().equals("Find")) {
+        } else if (!findButton.getText().equals("Find")) {
             findButton.set("Find");
         }
     }
