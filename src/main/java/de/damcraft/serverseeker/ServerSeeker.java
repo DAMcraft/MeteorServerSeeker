@@ -5,6 +5,7 @@ import de.damcraft.serverseeker.commands.ServerSeekerCommand;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.modules.BungeeSpoof;
 import de.damcraft.serverseeker.country.CountrySetting;
+import de.damcraft.serverseeker.modules.ServerSeeker2000;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
@@ -40,6 +41,7 @@ public class ServerSeeker extends MeteorAddon {
 
         // Modules
         Modules.get().add( new BungeeSpoof() );
+        Modules.get().add( new ServerSeeker2000() );
 
         // Commands
         Commands.add(new ServerSeekerCommand());

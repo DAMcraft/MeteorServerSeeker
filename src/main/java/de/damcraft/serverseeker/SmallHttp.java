@@ -19,8 +19,7 @@ public class SmallHttp {
                     .build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
             ).body();
-        }
-        catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }
