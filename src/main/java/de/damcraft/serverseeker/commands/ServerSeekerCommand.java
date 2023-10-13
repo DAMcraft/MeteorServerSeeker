@@ -27,10 +27,6 @@ public class ServerSeekerCommand extends Command {
         super("serverseeker", "ServerSeeker-related commands", "ss");
     }
 
-    private void randomHandler(String m) {
-
-    }
-
     @Override
     public void build(LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(

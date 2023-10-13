@@ -57,7 +57,6 @@ public class ServerSeeker2000 extends Module {
 
     @Override
     public void onActivate() {
-
         wsClient = defaultWsClient();
         wsClient.connect();
     }
