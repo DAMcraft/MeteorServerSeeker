@@ -47,7 +47,7 @@ public class ServerSeeker2000 extends Module {
             if (serverProtocol != currentProtocol) {
                 style = style
                     .withColor(Formatting.RED)
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("THis server is not on your current version!")));
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("This server is not on your current version!")));
             }
 
             MutableText text = Text.literal("^ Join this server ^\n").setStyle(style);
