@@ -1,19 +1,18 @@
 package de.damcraft.serverseeker;
 
 import com.mojang.logging.LogUtils;
+import de.damcraft.serverseeker.country.Countries;
 import de.damcraft.serverseeker.commands.ServerSeekerCommand;
 import de.damcraft.serverseeker.country.Country;
-import de.damcraft.serverseeker.modules.BungeeSpoof;
 import de.damcraft.serverseeker.country.CountrySetting;
-import de.damcraft.serverseeker.modules.ServerSeeker2000;
+import de.damcraft.serverseeker.modules.BungeeSpoof;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import net.minecraft.item.*;
+import net.minecraft.item.Items;
 import org.slf4j.Logger;
-import de.damcraft.serverseeker.country.Countries;
 
 import java.util.HashMap;
 import java.util.Map;
