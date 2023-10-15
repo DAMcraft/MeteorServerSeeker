@@ -7,6 +7,7 @@ import de.damcraft.serverseeker.ServerSeeker2000Client;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.network.ServerInfo;
@@ -39,7 +40,8 @@ public class ServerSeeker2000 extends Module {
             int currentProtocol = SharedConstants.getProtocolVersion();
             info("Received server: %s".formatted(j.get("server").getAsString()));
             info(" Version: %s".formatted(j.get("version").getAsString()));
-            info(" Cracked: %b".formatted(j.get("cracked").getAsBoolean()));
+            String cracked = j.get("cracked").isJsonNull() ? "Unknown" : j.get("cracked").getAsString();
+            info(" Cracked: %s".formatted(cracked));
             info(" Online players: %d".formatted(j.get("online_players").getAsInt()));
             Style style = Style.EMPTY;
             style = style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, ".serverseeker join-2k-server " + (servers.size()-1)));
@@ -57,8 +59,10 @@ public class ServerSeeker2000 extends Module {
 
     @Override
     public void onActivate() {
-        wsClient = defaultWsClient();
-        wsClient.connect();
+        if(Utils.canUpdate()) {
+            wsClient = defaultWsClient();
+            wsClient.connect();
+        }
     }
 
     @EventHandler
@@ -68,13 +72,13 @@ public class ServerSeeker2000 extends Module {
 
     @EventHandler
     public void onGameJoined(GameJoinedEvent e) {
-        wsClient.close();
+        if (wsClient != null) wsClient.close();
         wsClient = defaultWsClient();
         wsClient.connect();
     }
 
     @Override
     public void onDeactivate() {
-        wsClient.close();
+        if (Utils.canUpdate()) wsClient.close();
     }
 }
