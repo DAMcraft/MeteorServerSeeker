@@ -3,6 +3,7 @@ package de.damcraft.serverseeker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
 import meteordevelopment.meteorclient.renderer.Texture;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.network.Http;
@@ -26,14 +27,14 @@ public class DiscordAvatar extends Texture {
 
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/user_info", params.toString());
 
-                JsonObject obj = (new Gson()).fromJson(jsonResp, JsonObject.class);
-                if (obj.has("error")) {
-                    System.out.println("Error: " + obj.get("error").getAsString());
+                UserInfoResponse userInfo = (new Gson()).fromJson(jsonResp, UserInfoResponse.class);
+                if (userInfo.isError()) {
+                    System.out.println("Error: " + userInfo.error);
                     return;
                 }
-                String discordId = obj.get("discord_id").getAsString();
-                String discordUsername = obj.get("discord_username").getAsString();
-                String discordAvatarUrl = obj.get("discord_avatar_url").getAsString();
+                String discordId = userInfo.discord_id;
+                String discordUsername = userInfo.discord_username;
+                String discordAvatarUrl = userInfo.discord_avatar_url;
 
                 Systems.get(ServerSeekerSystem.class).discordId = discordId;
                 Systems.get(ServerSeekerSystem.class).discordUsername = discordUsername;
