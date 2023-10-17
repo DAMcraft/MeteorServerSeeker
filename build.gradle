@@ -27,9 +27,6 @@ dependencies {
 
     // Meteor
     modImplementation "meteordevelopment:meteor-client:${project.meteor_version}"
-
-    // Websocket
-    implementation 'org.java-websocket:Java-WebSocket:1.5.4'
 }
 
 processResources {
