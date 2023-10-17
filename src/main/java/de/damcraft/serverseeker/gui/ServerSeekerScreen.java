@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.DiscordAvatar;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
+import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -62,27 +63,27 @@ public class ServerSeekerScreen extends WindowScreen {
             Gson gson = new Gson();
             String reqBody = "{\"api_key\":\"" + authToken + "\"}";
             String userInfoJson = SmallHttp.post("https://api.serverseeker.net/user_info", reqBody);
-            JsonObject userInfo = gson.fromJson(userInfoJson, JsonObject.class);
+            UserInfoResponse userInfo = gson.fromJson(userInfoJson, UserInfoResponse.class);
 
             userInfoList.clear();
 
             userInfoList.add(theme.label("Requests made:"));
             userInfoList.row();
 
-            int whereisRequestsMade = userInfo.get("requests_made_whereis").getAsInt();
-            int whereisRequestsTotal = userInfo.get("requests_per_day_whereis").getAsInt();
+            int whereisRequestsMade = userInfo.requests_made_whereis;
+            int whereisRequestsTotal = userInfo.requests_per_day_whereis;
             userInfoList.add(theme.label("Whereis: "));
             userInfoList.add(theme.label(whereisRequestsMade + "/" + whereisRequestsTotal)).widget().color(whereisRequestsTotal == whereisRequestsMade ? Color.RED : Color.WHITE);
             userInfoList.row();
 
-            int serversRequestsMade = userInfo.get("requests_made_servers").getAsInt();
-            int serversRequestsTotal = userInfo.get("requests_per_day_servers").getAsInt();
+            int serversRequestsMade = userInfo.requests_made_servers;
+            int serversRequestsTotal = userInfo.requests_per_day_servers;
             userInfoList.add(theme.label("Servers: "));
             userInfoList.add(theme.label(serversRequestsMade + "/" + serversRequestsTotal)).widget().color(serversRequestsTotal == serversRequestsMade ? Color.RED : Color.WHITE);
             userInfoList.row();
 
-            int serverInfoRequestsMade = userInfo.get("requests_made_server_info").getAsInt();
-            int serverInfoRequestsTotal = userInfo.get("requests_per_day_server_info").getAsInt();
+            int serverInfoRequestsMade = userInfo.requests_made_server_info;
+            int serverInfoRequestsTotal = userInfo.requests_per_day_server_info;
             userInfoList.add(theme.label("Server Info: "));
             userInfoList.add(theme.label(serverInfoRequestsMade + "/" + serverInfoRequestsTotal)).widget().color(serverInfoRequestsTotal == serverInfoRequestsMade ? Color.RED : Color.WHITE);
         }).start();
