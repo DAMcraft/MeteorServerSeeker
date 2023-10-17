@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
 import meteordevelopment.meteorclient.systems.Systems;
 import net.minecraft.util.Util;
 import org.apache.http.NameValuePair;
@@ -138,17 +139,17 @@ public class DiscordAuth {
             //                "discord_avatar_url": avatar_url
             //            } or {"error": "..."}
 
-            obj = gson.fromJson(jsonResp, JsonObject.class);
+            UserInfoResponse userInfo = gson.fromJson(jsonResp, UserInfoResponse.class);
 
-            if (obj.has("error")) {
-                System.out.println("Error: " + obj.get("error").getAsString());
-                callback.accept(null, obj.get("error").getAsString());
+            if (userInfo.isError()) {
+                System.out.println("Error: " + userInfo.error);
+                callback.accept(null, userInfo.error);
                 return;
             }
 
-            String discordId = obj.get("discord_id").getAsString();
-            String discordUsername = obj.get("discord_username").getAsString();
-            String discordAvatarUrl = obj.get("discord_avatar_url").getAsString();
+            String discordId = userInfo.discord_id;
+            String discordUsername = userInfo.discord_username;
+            String discordAvatarUrl = userInfo.discord_avatar_url;
 
             Systems.get(ServerSeekerSystem.class).discordId = discordId;
             Systems.get(ServerSeekerSystem.class).discordUsername = discordUsername;

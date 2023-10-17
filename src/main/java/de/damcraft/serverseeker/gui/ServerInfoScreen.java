@@ -4,6 +4,7 @@ import com.google.common.net.HostAndPort;
 import com.google.gson.*;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
+import de.damcraft.serverseeker.ssapi_responses.ServerInfoResponse;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
@@ -18,6 +19,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 
 public class ServerInfoScreen extends WindowScreen {
     private final String serverIp;
@@ -37,29 +39,28 @@ public class ServerInfoScreen extends WindowScreen {
         jsonObject.addProperty("ip", hap.getHost());
         jsonObject.addProperty("port", hap.getPort());
         String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", jsonObject.toString());
-        JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
-        String error = resp.has("error") ? resp.get("error").getAsString() : null;
-        if (error != null) {
+        ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
+        if (resp.isError()) {
             clear();
-            add(theme.label(error)).expandX();
+            add(theme.label(resp.error)).expandX();
             return;
         }
         clear();
 
-        JsonElement cracked = resp.get("cracked");
-        String description = resp.get("description").getAsString();
-        int onlinePlayers = resp.get("online_players").getAsInt();
-        int maxPlayers = resp.get("max_players").getAsInt();
-        int protocol = resp.get("protocol").getAsInt();
-        int lastSeen = resp.get("last_seen").getAsInt();
-        String version = resp.get("version").getAsString();
-        JsonArray players = resp.get("players").getAsJsonArray();
+        Boolean cracked = resp.cracked;
+        String description = resp.description;
+        int onlinePlayers = resp.online_players;
+        int maxPlayers = resp.max_players;
+        int protocol = resp.protocol;
+        int lastSeen = resp.last_seen;
+        String version = resp.version;
+        List<ServerInfoResponse.Player> players = resp.players;
 
         WTable dataTable = add(theme.table()).widget();
         WTable playersTable = add(theme.table()).expandX().widget();
 
         dataTable.add(theme.label("Cracked: "));
-        dataTable.add(theme.label((cracked instanceof JsonNull) ? "Unknown" : cracked.getAsString()));
+        dataTable.add(theme.label(cracked == null ? "Unknown" : cracked.toString()));
         dataTable.row();
 
         dataTable.add(theme.label("Description: "));
@@ -92,29 +93,25 @@ public class ServerInfoScreen extends WindowScreen {
         playersTable.row();
 
 
-        playersTable.add(theme.label("Name "));
-        playersTable.add(theme.label("Last seen "));
+        playersTable.add(theme.label("Name ")).expandX();
+        playersTable.add(theme.label("Last seen ")).expandX();
         playersTable.row();
 
 
         playersTable.add(theme.horizontalSeparator()).expandX();
         playersTable.row();
 
-        for (int i = 0; i < players.size(); i++) {
-            if (i > 0) playersTable.row();
-            else {
-                playersTable.add(theme.label(""));
-                playersTable.row();
-            }
-            ;
-            JsonObject player = players.get(i).getAsJsonObject();
-            String name = player.get("name").getAsString();
-            long playerLastSeen = player.get("last_seen").getAsLong();
+        playersTable.add(theme.label(""));
+
+        for (ServerInfoResponse.Player player : players) {
+            String name = player.name;
+            long playerLastSeen = player.last_seen;
             String lastSeenFormatted = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                 .format(Instant.ofEpochSecond(playerLastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
 
-            playersTable.add(theme.label(name + " "));
-            playersTable.add(theme.label(lastSeenFormatted + " "));
+            playersTable.add(theme.label(name + " ")).expandX();
+            playersTable.add(theme.label(lastSeenFormatted + " ")).expandX();
+            playersTable.row();
         }
         WButton joinServerButton = add(theme.button("Join this Server")).expandX().widget();
         joinServerButton.action = ()

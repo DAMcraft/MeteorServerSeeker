@@ -1,10 +1,10 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
+import de.damcraft.serverseeker.ssapi_responses.ServerInfoResponse;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -88,17 +89,16 @@ public class GetInfoScreen extends WindowScreen {
         String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", json);
 
         Gson gson = new Gson();
-        JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
+        ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
 
         // Set error message if there is one
-        String error = resp.has("error") ? resp.get("error").getAsString() : null;
-        if (error != null) {
+        if (resp.isError()) {
             clear();
-            add(theme.label(error)).expandX();
+            add(theme.label(resp.error)).expandX();
             return;
         }
         clear();
-        JsonArray players = resp.getAsJsonArray("players");
+        List<ServerInfoResponse.Player> players = resp.players;
         if (players.size() == 0) {
             clear();
             add(theme.label("No records of players found.")).expandX();
@@ -112,8 +112,8 @@ public class GetInfoScreen extends WindowScreen {
             }, ...
           ] */
         boolean cracked = false;
-        if (!resp.get("cracked").isJsonNull()) {
-            cracked = resp.get("cracked").getAsBoolean();
+        if (resp.cracked != null) {
+            cracked = resp.cracked;
         }
 
         if (!cracked) {
@@ -133,10 +133,9 @@ public class GetInfoScreen extends WindowScreen {
         table.add(theme.horizontalSeparator()).expandX();
         table.row();
 
-        for (int i = 0; i < players.size(); i++) {
-            JsonObject player = players.get(i).getAsJsonObject();
-            String name = player.get("name").getAsString();
-            long lastSeen = player.get("last_seen").getAsLong();
+        for (ServerInfoResponse.Player player : players) {
+            String name = player.name;
+            long lastSeen = player.last_seen;
             String lastSeenFormatted = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                 .format(Instant.ofEpochSecond(lastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
 

@@ -3,13 +3,13 @@ package de.damcraft.serverseeker.gui;
 import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
+import de.damcraft.serverseeker.ssapi_responses.ServersResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -26,6 +26,8 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+
+import java.util.List;
 
 public class FindNewServersScreen extends WindowScreen {
     private int timer;
@@ -273,6 +275,7 @@ public class FindNewServersScreen extends WindowScreen {
                     // [n, "inf"]
                     JsonArray jsonArray = new JsonArray();
                     jsonArray.add(atLeastMaxPlayersSetting.get());
+                    jsonArray.add("inf");
                     jsonObject.add("max_players", jsonArray);
                 }
                 case At_Most -> {
@@ -324,22 +327,22 @@ public class FindNewServersScreen extends WindowScreen {
             MeteorExecutor.execute(() -> {
                 String json = jsonObject.toString();
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
-
                 Gson gson = new Gson();
-                JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
+
+                ServersResponse resp = gson.fromJson(jsonResp, ServersResponse.class);
 
                 // Set error message if there is one
-                String error = resp.has("error") ? resp.get("error").getAsString() : null;
-                if (error != null) {
+                if (resp.isError()) {
                     clear();
-                    add(theme.label(error)).expandX();
+                    add(theme.label(resp.error)).expandX();
                     WButton backButton = add(theme.button("Back")).expandX().widget();
                     backButton.action = this::reload;
                     this.locked = false;
                     return;
                 }
                 clear();
-                JsonArray servers = resp.getAsJsonArray("data");
+                List<ServersResponse.Server> servers = resp.data;
+
                 if (servers.isEmpty()) {
                     add(theme.label("No servers found")).expandX();
                     WButton backButton = add(theme.button("Back")).expandX().widget();
@@ -350,8 +353,8 @@ public class FindNewServersScreen extends WindowScreen {
                 add(theme.label("Found " + servers.size() + " servers")).expandX();
                 WButton addAllButton = add(theme.button("Add all")).expandX().widget();
                 addAllButton.action = () -> {
-                    for (JsonElement server : servers) {
-                        String ip = server.getAsJsonObject().get("server").getAsString();
+                    for (ServersResponse.Server server : servers) {
+                        String ip = server.server;
 
                         // Add server to list
                         MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
@@ -378,11 +381,9 @@ public class FindNewServersScreen extends WindowScreen {
                 table.row();
 
 
-                for (int i = 0; i < servers.size(); i++) {
-                    if (i > 0) table.row();
-                    JsonObject server = servers.get(i).getAsJsonObject();
-                    final String serverIP = server.get("server").getAsString();
-                    String serverVersion = server.get("version").getAsString();
+                for (ServersResponse.Server server : servers) {
+                    final String serverIP = server.server;
+                    String serverVersion = server.version;
 
                     table.add(theme.label(serverIP));
                     table.add(theme.label(serverVersion));
@@ -407,6 +408,8 @@ public class FindNewServersScreen extends WindowScreen {
                     table.add(addServerButton);
                     table.add(joinServerButton);
                     table.add(serverInfoButton);
+
+                    table.row();
                 }
 
                 this.locked = false;

@@ -2,10 +2,10 @@ package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
+import de.damcraft.serverseeker.ssapi_responses.WhereisResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 
 public class FindPlayerScreen extends WindowScreen {
     private final MultiplayerScreen multiplayerScreen;
@@ -91,18 +92,17 @@ public class FindPlayerScreen extends WindowScreen {
             String jsonResp = SmallHttp.post("https://api.serverseeker.net/whereis", json);
 
             Gson gson = new Gson();
-            JsonObject resp = gson.fromJson(jsonResp, JsonObject.class);
+            WhereisResponse resp = gson.fromJson(jsonResp, WhereisResponse.class);
 
             // Set error message if there is one
-            String error = resp.has("error") ? resp.get("error").getAsString() : null;
-            if (error != null) {
+            if (resp.isError()) {
                 clear();
-                add(theme.label(error)).expandX();
+                add(theme.label(resp.error)).expandX();
                 return;
             }
             clear();
 
-            JsonArray data = resp.getAsJsonArray("data");
+            List<WhereisResponse.Record> data = resp.data;
             if (data.size() == 0) {
                 clear();
                 add(theme.label("Not found")).expandX();
@@ -124,12 +124,10 @@ public class FindPlayerScreen extends WindowScreen {
             table.row();
 
 
-            for (int i = 0; i < data.size(); i++) {
-                if (i > 0) table.row();
-                JsonObject server = data.get(i).getAsJsonObject();
-                String serverIP = server.get("server").getAsString();
-                String playerName = server.get("name").getAsString();
-                long playerLastSeen = server.get("last_seen").getAsLong(); // Unix timestamp
+            for (WhereisResponse.Record server : data) {
+                String serverIP = server.server;
+                String playerName = server.name;
+                long playerLastSeen = server.last_seen; // Unix timestamp
 
                 // Format last seen to human-readable
                 String playerLastSeenFormatted = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
@@ -162,11 +160,10 @@ public class FindPlayerScreen extends WindowScreen {
         };
     }
 
-    private void addAllServers(JsonArray servers) {
-        for (int i = 0; i < servers.size(); i++) {
-            JsonObject server = servers.get(i).getAsJsonObject();
-            String serverIP = server.get("server").getAsString();
-            String playerName = server.get("name").getAsString();
+    private void addAllServers(List<WhereisResponse.Record> records) {
+        for (WhereisResponse.Record record : records) {
+            String serverIP = record.server;
+            String playerName = record.name;
             ServerInfo info = new ServerInfo("ServerSeeker " + serverIP + " (Player: " + playerName + ")", serverIP, ServerInfo.ServerType.OTHER);
             MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info, false);
         }
