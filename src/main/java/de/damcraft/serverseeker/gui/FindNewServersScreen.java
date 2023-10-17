@@ -381,9 +381,7 @@ public class FindNewServersScreen extends WindowScreen {
                 table.row();
 
 
-                for (int i = 0; i < servers.size(); i++) {
-                    if (i > 0) table.row();
-                    ServersResponse.Server server = servers.get(i);
+                for (ServersResponse.Server server : servers) {
                     final String serverIP = server.server;
                     String serverVersion = server.version;
 
@@ -410,6 +408,8 @@ public class FindNewServersScreen extends WindowScreen {
                     table.add(addServerButton);
                     table.add(joinServerButton);
                     table.add(serverInfoButton);
+
+                    table.row();
                 }
 
                 this.locked = false;
