@@ -1,7 +1,9 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.ssapi_responses.ServerInfoResponse;

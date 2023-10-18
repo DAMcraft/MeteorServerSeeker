@@ -1,7 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.DiscordAvatar;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;

@@ -9,7 +9,6 @@ import de.damcraft.serverseeker.ssapi_responses.WhereisResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
-import meteordevelopment.meteorclient.gui.widgets.WHorizontalSeparator;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
@@ -73,7 +72,7 @@ public class FindPlayerScreen extends WindowScreen {
 
     @Override
     public void initWidgets() {
-        WContainer settingsContainer = add(theme.verticalList()).minWidth((int)(window.width) * 0.7).widget();
+        WContainer settingsContainer = add(theme.verticalList()).widget();
         settingsContainer.add(theme.settings(settings)).expandX();
 
         this.settingsContainer = settingsContainer;

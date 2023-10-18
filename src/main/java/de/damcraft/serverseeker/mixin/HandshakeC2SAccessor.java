@@ -1,6 +1,5 @@
 package de.damcraft.serverseeker.mixin;
 
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.c2s.handshake.ConnectionIntent;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;
