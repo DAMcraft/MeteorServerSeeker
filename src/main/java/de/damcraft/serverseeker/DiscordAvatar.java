@@ -27,7 +27,7 @@ public class DiscordAvatar extends Texture {
 
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/user_info", params.toString());
 
-                UserInfoResponse userInfo = (new Gson()).fromJson(jsonResp, UserInfoResponse.class);
+                UserInfoResponse userInfo = new Gson().fromJson(jsonResp, UserInfoResponse.class);
                 if (userInfo.isError()) {
                     System.out.println("Error: " + userInfo.error);
                     return;
