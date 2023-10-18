@@ -9,6 +9,7 @@ import de.damcraft.serverseeker.ssapi_responses.WhereisResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
+import meteordevelopment.meteorclient.gui.widgets.WHorizontalSeparator;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
@@ -26,6 +27,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+
+import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class FindPlayerScreen extends WindowScreen {
     private final MultiplayerScreen multiplayerScreen;
@@ -70,7 +73,7 @@ public class FindPlayerScreen extends WindowScreen {
 
     @Override
     public void initWidgets() {
-        WContainer settingsContainer = add(theme.verticalList()).minWidth(256 * 1.5).widget();
+        WContainer settingsContainer = add(theme.verticalList()).minWidth((int)(window.width) * 0.7).widget();
         settingsContainer.add(theme.settings(settings)).expandX();
 
         this.settingsContainer = settingsContainer;
@@ -110,16 +113,15 @@ public class FindPlayerScreen extends WindowScreen {
             }
             add(theme.label("Found " + data.size() + " servers:"));
             WTable table = add(theme.table()).widget();
+            WButton addAllButton = table.add(theme.button("Add all")).expandX().widget();
+            addAllButton.action = () -> addAllServers(data);
 
+            table.row();
             table.add(theme.label("Server IP"));
             table.add(theme.label("Player name"));
             table.add(theme.label("Last seen"));
 
-            WButton addAllButton = table.add(theme.button("Add all")).expandCellX().widget();
-            addAllButton.action = () -> addAllServers(data);
-
             table.row();
-
             table.add(theme.horizontalSeparator()).expandX();
             table.row();
 
@@ -132,10 +134,10 @@ public class FindPlayerScreen extends WindowScreen {
                 // Format last seen to human-readable
                 String playerLastSeenFormatted = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
                     .format(Instant.ofEpochSecond(playerLastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
-
-                table.add(theme.label(serverIP));
-                table.add(theme.label(playerName));
-                table.add(theme.label(playerLastSeenFormatted));
+                int minWidth = (int)(mc.getWindow().getWidth() * 0.2);
+                table.add(theme.label(serverIP)).minWidth(minWidth);
+                table.add(theme.label(playerName)).minWidth(minWidth);
+                table.add(theme.label(playerLastSeenFormatted)).minWidth(minWidth);
 
                 WButton addServerButton = theme.button("Add Server");
                 addServerButton.action = () -> {
@@ -156,6 +158,7 @@ public class FindPlayerScreen extends WindowScreen {
                 table.add(addServerButton);
                 table.add(joinServerButton);
                 table.add(serverInfoButton);
+                table.row();
             }
         };
     }
