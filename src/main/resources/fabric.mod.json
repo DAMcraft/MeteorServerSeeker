@@ -8,7 +8,9 @@
     "DAMcraft"
   ],
   "contact": {
-    "repo": "https://github.com/DAMcraft/MeteorServerSeeker/"
+    "repo": "https://github.com/DAMcraft/MeteorServerSeeker/",
+    "discord": "https://discord.gg/serverseeker-1087081486747971705",
+    "website": "https://serverseeker.net/"
   },
   "icon": "assets/serverseeker/icon.png",
   "environment": "client",
@@ -21,7 +23,8 @@
     "serverseeker.mixins.json"
   ],
   "custom": {
-    "meteor-client:color": "153,45,34"
+    "meteor-client:color": "153,45,34",
+    "github:sha": "${gh_hash}"
   },
   "depends": {
     "java": ">=17",

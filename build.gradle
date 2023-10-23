@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "1.1-SNAPSHOT"
+    id "fabric-loom" version "1.4-SNAPSHOT"
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
@@ -31,7 +31,7 @@ dependencies {
 
 processResources {
     filesMatching("fabric.mod.json") {
-        expand "version": project.version, "mc_version": project.minecraft_version
+        expand "version": project.version, "mc_version": project.minecraft_version, "gh_hash": (System.getenv("GITHUB_SHA") ?: "")
     }
 }
 

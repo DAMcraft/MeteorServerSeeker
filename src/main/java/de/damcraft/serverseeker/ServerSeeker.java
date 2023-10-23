@@ -5,10 +5,12 @@ import de.damcraft.serverseeker.country.Countries;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.modules.BungeeSpoof;
+import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
@@ -49,5 +51,26 @@ public class ServerSeeker extends MeteorAddon {
     @Override
     public String getPackage() {
         return "de.damcraft.serverseeker";
+    }
+
+    @Override
+    public GithubRepo getRepo() {
+        return new GithubRepo("DAMcraft", "MeteorServerSeeker");
+    }
+
+    @Override
+    public String getWebsite() {
+        return "https://serverseeker.net/";
+    }
+
+    @Override
+    public String getCommit() {
+        String commit = FabricLoader
+            .getInstance()
+            .getModContainer("serverseeker")
+            .get().getMetadata()
+            .getCustomValue("github:sha")
+            .getAsString();
+        return commit.isEmpty() ? null : commit.trim();
     }
 }
