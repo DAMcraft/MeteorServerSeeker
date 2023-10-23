@@ -346,7 +346,6 @@ public class FindNewServersScreen extends WindowScreen {
                     this.threadHasFinished = true;
                     return;
                 }
-                clear();
                 this.threadServers = resp.data;
                 this.threadHasFinished = true;
             });
@@ -396,6 +395,7 @@ public class FindNewServersScreen extends WindowScreen {
             this.locked = false;
             return;
         }
+        clear();
         List<ServersResponse.Server> servers = this.threadServers;
 
         if (servers.isEmpty()) {
