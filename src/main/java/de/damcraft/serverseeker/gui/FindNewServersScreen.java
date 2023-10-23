@@ -32,6 +32,9 @@ import java.util.List;
 public class FindNewServersScreen extends WindowScreen {
     private int timer;
     public WButton findButton;
+    private boolean threadHasFinished;
+    private String threadError;
+    private List<ServersResponse.Server> threadServers;
 
     public enum Cracked {
         Any,
@@ -324,6 +327,12 @@ public class FindNewServersScreen extends WindowScreen {
 
 
             this.locked = true;
+
+            this.threadHasFinished = false;
+            this.threadError = null;
+            this.threadServers = null;
+
+
             MeteorExecutor.execute(() -> {
                 String json = jsonObject.toString();
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
@@ -333,86 +342,13 @@ public class FindNewServersScreen extends WindowScreen {
 
                 // Set error message if there is one
                 if (resp.isError()) {
-                    clear();
-                    add(theme.label(resp.error)).expandX();
-                    WButton backButton = add(theme.button("Back")).expandX().widget();
-                    backButton.action = this::reload;
-                    this.locked = false;
+                    this.threadError = resp.error;
+                    this.threadHasFinished = true;
                     return;
                 }
                 clear();
-                List<ServersResponse.Server> servers = resp.data;
-
-                if (servers.isEmpty()) {
-                    add(theme.label("No servers found")).expandX();
-                    WButton backButton = add(theme.button("Back")).expandX().widget();
-                    backButton.action = this::reload;
-                    this.locked = false;
-                    return;
-                }
-                add(theme.label("Found " + servers.size() + " servers")).expandX();
-                WButton addAllButton = add(theme.button("Add all")).expandX().widget();
-                addAllButton.action = () -> {
-                    for (ServersResponse.Server server : servers) {
-                        String ip = server.server;
-
-                        // Add server to list
-                        MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
-                    }
-                    MultiplayerScreenUtil.saveList(multiplayerScreen);
-
-                    // Reload widget
-                    MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
-
-                    // Close screen
-                    if (this.client == null) return;
-                    client.setScreen(this.multiplayerScreen);
-                };
-
-                WTable table = add(theme.table()).widget();
-
-                table.add(theme.label("Server IP"));
-                table.add(theme.label("Version"));
-
-
-                table.row();
-
-                table.add(theme.horizontalSeparator()).expandX();
-                table.row();
-
-
-                for (ServersResponse.Server server : servers) {
-                    final String serverIP = server.server;
-                    String serverVersion = server.version;
-
-                    table.add(theme.label(serverIP));
-                    table.add(theme.label(serverVersion));
-
-                    WButton addServerButton = theme.button("Add Server");
-                    addServerButton.action = () -> {
-                        System.out.println(multiplayerScreen.getServerList() == null);
-                        ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
-                        MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
-                        addServerButton.visible = false;
-                    };
-
-                    WButton joinServerButton = theme.button("Join Server");
-                    HostAndPort hap = HostAndPort.fromString(serverIP);
-
-                    joinServerButton.action = ()
-                        -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false);
-
-                    WButton serverInfoButton = theme.button("Server Info");
-                    serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
-
-                    table.add(addServerButton);
-                    table.add(joinServerButton);
-                    table.add(serverInfoButton);
-
-                    table.row();
-                }
-
-                this.locked = false;
+                this.threadServers = resp.data;
+                this.threadHasFinished = true;
             });
         };
     }
@@ -421,6 +357,8 @@ public class FindNewServersScreen extends WindowScreen {
     public void tick() {
         super.tick();
         settings.tick(settingsContainer, theme);
+
+        if (threadHasFinished) handleThreadFinish();
 
         if (locked) {
             if (timer > 2) {
@@ -445,5 +383,90 @@ public class FindNewServersScreen extends WindowScreen {
             case "o0o" -> "oo0";
             default -> "Find";
         };
+    }
+
+    private void handleThreadFinish() {
+        this.threadHasFinished = false;
+        this.locked = false;
+        if (this.threadError != null) {
+            clear();
+            add(theme.label(this.threadError)).expandX();
+            WButton backButton = add(theme.button("Back")).expandX().widget();
+            backButton.action = this::reload;
+            this.locked = false;
+            return;
+        }
+        List<ServersResponse.Server> servers = this.threadServers;
+
+        if (servers.isEmpty()) {
+            add(theme.label("No servers found")).expandX();
+            WButton backButton = add(theme.button("Back")).expandX().widget();
+            backButton.action = this::reload;
+            this.locked = false;
+            return;
+        }
+        add(theme.label("Found " + servers.size() + " servers")).expandX();
+        WButton addAllButton = add(theme.button("Add all")).expandX().widget();
+        addAllButton.action = () -> {
+            for (ServersResponse.Server server : servers) {
+                String ip = server.server;
+
+                // Add server to list
+                MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
+            }
+            MultiplayerScreenUtil.saveList(multiplayerScreen);
+
+            // Reload widget
+            MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
+
+            // Close screen
+            if (this.client == null) return;
+            client.setScreen(this.multiplayerScreen);
+        };
+
+        WTable table = add(theme.table()).widget();
+
+        table.add(theme.label("Server IP"));
+        table.add(theme.label("Version"));
+
+
+        table.row();
+
+        table.add(theme.horizontalSeparator()).expandX();
+        table.row();
+
+
+        for (ServersResponse.Server server : servers) {
+            final String serverIP = server.server;
+            String serverVersion = server.version;
+
+            table.add(theme.label(serverIP));
+            table.add(theme.label(serverVersion));
+
+            WButton addServerButton = theme.button("Add Server");
+            addServerButton.action = () -> {
+                System.out.println(multiplayerScreen.getServerList() == null);
+                ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
+                MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
+                addServerButton.visible = false;
+            };
+
+            WButton joinServerButton = theme.button("Join Server");
+            HostAndPort hap = HostAndPort.fromString(serverIP);
+
+            joinServerButton.action = ()
+                -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false);
+
+            WButton serverInfoButton = theme.button("Server Info");
+            serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
+
+            table.add(addServerButton);
+            table.add(joinServerButton);
+            table.add(serverInfoButton);
+
+            table.row();
+        }
+
+        this.locked = false;
     }
 }
