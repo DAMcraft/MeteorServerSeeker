@@ -10,7 +10,9 @@
   "contact": {
     "repo": "https://github.com/DAMcraft/MeteorServerSeeker/",
     "discord": "https://discord.gg/serverseeker-1087081486747971705",
-    "website": "https://serverseeker.net/"
+    "homepage": "https://serverseeker.net/",
+    "issues": "https://github.com/DAMcraft/MeteorServerSeeker/issues",
+    "sources": "https://github.com/DAMcraft/MeteorServerSeeker/"
   },
   "icon": "assets/serverseeker/icon.png",
   "environment": "client",
@@ -24,7 +26,12 @@
   ],
   "custom": {
     "meteor-client:color": "153,45,34",
-    "github:sha": "${gh_hash}"
+    "github:sha": "${gh_hash}",
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/serverseeker-1087081486747971705"
+      }
+    }
   },
   "depends": {
     "java": ">=17",
