@@ -5,7 +5,8 @@
   "client": [
     "MultiplayerScreenAccessor",
     "MultiplayerScreenMixin",
-    "SystemsMixin"
+    "SystemsMixin",
+    "TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
