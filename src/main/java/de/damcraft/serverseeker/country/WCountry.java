@@ -14,6 +14,7 @@ public class WCountry extends WWidget {
     }
 
     public void set(Country country) {
+        if (this.country != country) this.cache = null;
         this.country = country;
     }
 
