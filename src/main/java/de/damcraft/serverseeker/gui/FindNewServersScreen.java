@@ -292,9 +292,7 @@ public class FindNewServersScreen extends WindowScreen {
 
 
             MeteorExecutor.execute(() -> {
-                String json = request.json();
-                System.out.println(json);
-                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
+                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", request.json());
                 Gson gson = new Gson();
 
                 ServersResponse resp = gson.fromJson(jsonResp, ServersResponse.class);
