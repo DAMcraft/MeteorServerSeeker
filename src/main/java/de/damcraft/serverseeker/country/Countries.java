@@ -4,7 +4,11 @@ import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 
 public class Countries {
+    public static final Country UN = new DefaultCountry("Any", "UN");
+
     public static void init() {
+        ServerSeeker.COUNTRY_MAP.put("UN", UN);
+
         MeteorExecutor.execute(() -> {
             ServerSeeker.COUNTRY_MAP.put("AF", new Country("Afghanistan", "AF"));
             ServerSeeker.COUNTRY_MAP.put("AX", new Country("Aland Islands", "AX"));

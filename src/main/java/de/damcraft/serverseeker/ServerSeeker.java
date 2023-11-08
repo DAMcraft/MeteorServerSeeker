@@ -35,7 +35,6 @@ public class ServerSeeker extends MeteorAddon {
         LOG.info("Loaded the ServerSeeker addon!");
 
         // Load countries
-        COUNTRY_MAP.put("UN", new Country("Any", "UN"));
         Countries.init();
 
         Modules.get().add( new BungeeSpoof() );
