@@ -1,7 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
-import com.google.gson.Gson;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
 import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
@@ -36,8 +35,7 @@ public class ServerInfoScreen extends WindowScreen {
         ServerInfoRequest request = new ServerInfoRequest();
         HostAndPort hap = HostAndPort.fromString(serverIp);
         request.setIpPort(hap.getHost(), hap.getPort());
-        String jsonRequest = new Gson().toJson(request.json());
-        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", jsonRequest);
+        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", request.json());
         ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
         if (resp.isError()) {
             clear();
