@@ -1,15 +1,12 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeeker;
-import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
-import de.damcraft.serverseeker.ssapi_responses.ServersResponse;
+import de.damcraft.serverseeker.ssapi.requests.ServersRequest;
+import de.damcraft.serverseeker.ssapi.responses.ServersResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -17,7 +14,6 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
@@ -29,6 +25,8 @@ import net.minecraft.client.network.ServerInfo;
 
 import java.util.List;
 
+import static de.damcraft.serverseeker.ServerSeeker.gson;
+
 public class FindNewServersScreen extends WindowScreen {
     private int timer;
     public WButton findButton;
@@ -39,21 +37,21 @@ public class FindNewServersScreen extends WindowScreen {
     public enum Cracked {
         Any,
         Yes,
-        No
+        No;
+
+        public Boolean toBoolOrNull() {
+            return switch (this) {
+                case Any -> null;
+                case Yes -> true;
+                case No -> false;
+            };
+        }
     }
 
     public enum Version {
         Current,
         Any,
         Custom
-    }
-
-    public enum Software {
-        Any,
-        Vanilla,
-        Paper,
-        Spigot,
-        Bukkit
     }
 
     public enum NumRangeType {
@@ -166,10 +164,10 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Software> softwareSetting = sg.add(new EnumSetting.Builder<Software>()
+    private final Setting<ServersRequest.Software> softwareSetting = sg.add(new EnumSetting.Builder<ServersRequest.Software>()
         .name("software")
         .description("The software the servers should have")
-        .defaultValue(Software.Any)
+        .defaultValue(ServersRequest.Software.Any)
         .build()
     );
 
@@ -232,98 +230,59 @@ public class FindNewServersScreen extends WindowScreen {
 
     @Override
     public void initWidgets() {
-
         settingsContainer = add(theme.verticalList()).widget();
         settingsContainer.add(theme.settings(settings));
         findButton = add(theme.button("Find")).expandX().widget();
         findButton.action = () -> {
-
-            String apiKey = Systems.get(ServerSeekerSystem.class).apiKey;
-
-            // Create a new JSON object
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("api_key", apiKey);
+            ServersRequest request = new ServersRequest();
 
             switch (onlinePlayersNumTypeSetting.get()) {
-
                 // [n, "inf"]
-                case At_Least -> {
-                    JsonArray jsonArray = new JsonArray();
-                    jsonArray.add(atLeastOnlinePlayersSetting.get());
-                    jsonArray.add("inf");
-                    jsonObject.add("online_players", jsonArray);
-                }
+                case At_Least -> request.setOnlinePlayers(atLeastOnlinePlayersSetting.get(), -1);
 
                 // [0, n]
-                case At_Most -> {
-                    JsonArray jsonArray = new JsonArray();
-                    jsonArray.add(0);
-                    jsonArray.add(atMostOnlinePlayersSetting.get());
-                    jsonObject.add("online_players", jsonArray);
-                }
+                case At_Most -> request.setOnlinePlayers(0, atMostOnlinePlayersSetting.get());
 
                 // [min, max]
-                case Between -> {
-                    JsonArray jsonArray = new JsonArray();
-                    jsonArray.add(atLeastOnlinePlayersSetting.get());
-                    jsonArray.add(atMostOnlinePlayersSetting.get());
-                    jsonObject.add("online_players", jsonArray);
-                }
-                case Equals -> jsonObject.addProperty("online_players", equalsOnlinePlayersSetting.get());
+                case Between -> request.setOnlinePlayers(atLeastOnlinePlayersSetting.get(), atMostOnlinePlayersSetting.get());
 
+                // [n, n]
+                case Equals -> request.setOnlinePlayers(equalsOnlinePlayersSetting.get());
             }
 
             switch (maxPlayersNumTypeSetting.get()) {
-                case At_Least -> {
-                    // [n, "inf"]
-                    JsonArray jsonArray = new JsonArray();
-                    jsonArray.add(atLeastMaxPlayersSetting.get());
-                    jsonArray.add("inf");
-                    jsonObject.add("max_players", jsonArray);
-                }
-                case At_Most -> {
-                    // [0, n]
-                    JsonArray jsonArray = new JsonArray();
-                    jsonArray.add(0);
-                    jsonArray.add(atMostMaxPlayersSetting.get());
-                    jsonObject.add("max_players", jsonArray);
-                }
-                case Between -> {
-                    // [min, max]
-                    JsonArray jsonArray = new JsonArray();
-                    jsonArray.add(atLeastMaxPlayersSetting.get());
-                    jsonArray.add(atMostMaxPlayersSetting.get());
-                    jsonObject.add("max_players", jsonArray);
-                }
-                case Equals -> jsonObject.addProperty("max_players", equalsMaxPlayersSetting.get());
+                // [n, "inf"]
+                case At_Least -> request.setMaxPlayers(atLeastMaxPlayersSetting.get(), -1);
+
+                // [0, n]
+                case At_Most -> request.setMaxPlayers(0, atMostMaxPlayersSetting.get());
+
+                // [min, max]
+                case Between -> request.setMaxPlayers(atLeastMaxPlayersSetting.get(), atMostMaxPlayersSetting.get());
+
+                // [n, n]
+                case Equals -> request.setMaxPlayers(equalsMaxPlayersSetting.get());
             }
+
 
             switch (geoSearchTypeSetting.get()) {
-                case None -> {}
-                case ASN -> jsonObject.addProperty("asn", asnNumberSetting.get());
+                case ASN -> request.setAsn(asnNumberSetting.get());
                 case Country -> {
-                    if (!countrySetting.get().name.equalsIgnoreCase("any")) {
-                        jsonObject.addProperty("country_code", countrySetting.get().code);
-                    }
+                    if (countrySetting.get().name.equalsIgnoreCase("any")) break;
+                    request.setCountryCode(countrySetting.get().code);
                 }
             }
 
-            if (crackedSetting.get() != Cracked.Any)
-                jsonObject.addProperty("cracked", crackedSetting.get() == Cracked.Yes);
+            request.setCracked(crackedSetting.get().toBoolOrNull());
+            request.setDescription(descriptionSetting.get());
+            request.setSoftware(softwareSetting.get());
 
-            if (!descriptionSetting.get().isEmpty())
-                jsonObject.addProperty("description", descriptionSetting.get());
+            switch (versionSetting.get()) {
+                case Custom -> request.setProtocolVersion(customProtocolSetting.get());
+                case Current -> request.setProtocolVersion(SharedConstants.getProtocolVersion());
+            }
 
-            if (softwareSetting.get() != Software.Any)
-                jsonObject.addProperty("software", softwareSetting.get().toString().toLowerCase());
-
-            if (versionSetting.get() == Version.Custom)
-                jsonObject.addProperty("protocol", customProtocolSetting.get());
-            else if (versionSetting.get() == Version.Current)
-                jsonObject.addProperty("protocol", SharedConstants.getProtocolVersion());
-
-            if (!onlineOnlySetting.get())
-                jsonObject.addProperty("online_after", 0);
+            if (!onlineOnlySetting.get()) request.setOnlineAfter(0);
 
 
             this.locked = true;
@@ -334,9 +293,7 @@ public class FindNewServersScreen extends WindowScreen {
 
 
             MeteorExecutor.execute(() -> {
-                String json = jsonObject.toString();
-                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", json);
-                Gson gson = new Gson();
+                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", request.json());
 
                 ServersResponse resp = gson.fromJson(jsonResp, ServersResponse.class);
 
