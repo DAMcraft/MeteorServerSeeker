@@ -374,6 +374,11 @@ public class FindNewServersScreen extends WindowScreen {
         }
     }
 
+    @Override
+    protected void onClosed() {
+        ServerSeeker.COUNTRY_MAP.values().forEach(Country::dispose);
+    }
+
     private String getNext(WButton add) {
         return switch (add.getText()) {
             case "Find", "oo0" -> "ooo";

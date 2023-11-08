@@ -1,18 +1,16 @@
 package de.damcraft.serverseeker.country;
 
+import meteordevelopment.meteorclient.renderer.Texture;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.BufferUtils;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.nio.ByteBuffer;
 import java.util.Locale;
 
 import static meteordevelopment.meteorclient.MeteorClient.LOG;
@@ -22,8 +20,7 @@ public class Country implements Comparable<Country> {
     public final Identifier identifier;
     public final String name;
     public final String code;
-    protected Reference<CountryTextureData> textureData = new WeakReference<>(null);
-    private boolean isQueued = false;
+    private final TextureData textureData;
 
     public Country(String name, String code) {
         this.name = name;
@@ -31,45 +28,19 @@ public class Country implements Comparable<Country> {
         this.identifier = new Identifier("serverseeker", "textures/flags/" + this.code + ".png");
         if (mc.getResourceManager().getResource(this.identifier).isEmpty()) {
             LOG.error("Could not find flag for country: " + this.code);
-            this.textureData = new WeakReference<>(Countries.UN.getTextureData());
-        }
+            this.textureData = new EmptyTextureData();
+        } else this.textureData = new CountryTextureData();
     }
 
-    public CountryTextureData getTextureData() {
-        if (textureData.get() == null) {
-            queue();
-            return Countries.UN.getTextureData();
-        } else return textureData.get();
+    @Nullable
+    public Texture getTexture() {
+        Texture texture = this.textureData.get();
+        if (texture == null) return this == Countries.UN ? null : Countries.UN.getTexture();
+        return texture;
     }
 
-    private void queue() {
-        if (isQueued) return;
-        isQueued = true;
-        MeteorExecutor.execute(() -> {
-            textureData = new WeakReference<>(computeTextureData());
-            isQueued = false;
-        });
-    }
-
-    protected CountryTextureData computeTextureData() {
-        Resource textureResource = mc.getResourceManager().getResource(this.identifier).orElseThrow();
-
-        try (InputStream imageStream = textureResource.getInputStream()) {
-            BufferedImage bufferedImage = ImageIO.read(imageStream);
-
-            int[] pixels = bufferedImage.getRGB(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(), null, 0, bufferedImage.getWidth());
-            byte[] data = new byte[bufferedImage.getWidth() * bufferedImage.getHeight() * 3];
-
-            for (int i = 0; i < pixels.length; i++) {
-                data[3 * i] = (byte) ((pixels[i] >> 16) & 0xFF); // r
-                data[3 * i + 1] = (byte) ((pixels[i] >>  8) & 0xFF); // g
-                data[3 * i + 2] = (byte) ((pixels[i]) & 0xFF); // b
-            }
-
-            return new CountryTextureData(data, bufferedImage.getWidth(), bufferedImage.getHeight());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void dispose() {
+        this.textureData.dispose();
     }
 
     @Override
@@ -77,13 +48,67 @@ public class Country implements Comparable<Country> {
         return this.name.compareTo(o.name);
     }
 
-    public record CountryTextureData(byte[] textureData, int width, int height) {
-        public ByteBuffer getBuffer() {
-            return BufferUtils.createByteBuffer(textureData.length).put(textureData);
+    public sealed interface TextureData {
+        @Nullable
+        default Texture get() {
+            return null;
         }
 
-        public boolean isLoaded() {
-            return this != Countries.UN.getTextureData();
+        default void dispose() {}
+    }
+
+    public final class CountryTextureData implements TextureData {
+        private Texture texture = null;
+        private State state = State.EMPTY;
+
+        @Nullable
+        @Override
+        public Texture get() {
+            if (this.state == State.DONE) return this.texture;
+            else {
+                if (this.state == State.EMPTY) MeteorExecutor.execute(this::load);
+                return null;
+            }
+        }
+
+        @Override
+        public void dispose() {
+            if (this.state == State.DONE) {
+                this.texture.dispose();
+                this.texture = null;
+            }
+            this.state = State.EMPTY;
+        }
+
+        private void load() {
+            this.state = State.LOADING;
+            Resource textureResource = mc.getResourceManager().getResource(Country.this.identifier).orElseThrow();
+
+            try (InputStream imageStream = textureResource.getInputStream()) {
+                BufferedImage bufferedImage = ImageIO.read(imageStream);
+
+                int[] pixels = bufferedImage.getRGB(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(), null, 0, bufferedImage.getWidth());
+                byte[] data = new byte[bufferedImage.getWidth() * bufferedImage.getHeight() * 3];
+
+                for (int i = 0; i < pixels.length; i++) {
+                    data[3 * i] = (byte) ((pixels[i] >> 16) & 0xFF); // r
+                    data[3 * i + 1] = (byte) ((pixels[i] >>  8) & 0xFF); // g
+                    data[3 * i + 2] = (byte) ((pixels[i]) & 0xFF); // b
+                }
+
+                this.texture = new Texture(bufferedImage.getWidth(), bufferedImage.getHeight(), data, Texture.Format.RGB, Texture.Filter.Nearest, Texture.Filter.Nearest);
+                this.state = State.DONE;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public enum State {
+            EMPTY,
+            LOADING,
+            DONE
         }
     }
+
+    public static final class EmptyTextureData implements TextureData {}
 }

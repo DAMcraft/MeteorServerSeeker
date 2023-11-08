@@ -7,14 +7,12 @@ import meteordevelopment.meteorclient.renderer.Texture;
 public class WCountry extends WWidget {
 
     private Country country;
-    private Country.CountryTextureData cache = null;
 
     public WCountry(Country country) {
         this.country = country;
     }
 
     public void set(Country country) {
-        if (this.country != country) this.cache = null;
         this.country = country;
     }
 
@@ -28,14 +26,9 @@ public class WCountry extends WWidget {
 
     @Override
     protected void onRender(GuiRenderer renderer, double mouseX, double mouseY, double delta) {
-        Country.CountryTextureData textureData;
-        if (this.cache == null) {
-            textureData = this.country.getTextureData();
-            if (textureData.isLoaded()) this.cache = textureData;
-        } else textureData = this.cache;
+        Texture texture = this.country.getTexture();
 
-        Texture texture = new Texture();
-        texture.upload(textureData.width(), textureData.height(), textureData.getBuffer(), Texture.Format.RGB, Texture.Filter.Nearest, Texture.Filter.Nearest, false);
+        if (texture == null) return;
 
         texture.bind();
 
