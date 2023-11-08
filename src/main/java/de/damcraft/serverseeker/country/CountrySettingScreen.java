@@ -59,7 +59,7 @@ public class CountrySettingScreen extends WindowScreen {
 
         for (Country country : countryArray) {
             if (setting.filter != null && !setting.filter.test(country)) continue;
-            boolean isSelected = country.equals(setting.get());
+            boolean isSelected = country == setting.get();
             if (!filterText.isEmpty() && (
                 !StringUtils.containsIgnoreCase(country.name, filterText) && !StringUtils.containsIgnoreCase(country.code, filterText)
             )) continue;

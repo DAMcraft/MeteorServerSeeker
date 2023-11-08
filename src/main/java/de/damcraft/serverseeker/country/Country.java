@@ -71,10 +71,6 @@ public class Country {
         }
     }
 
-    public boolean equals(Country country) {
-        return this.code.equals(country.code);
-    }
-
     public record CountryTextureData(byte[] textureData, int width, int height) {
         public ByteBuffer getBuffer() {
             return BufferUtils.createByteBuffer(textureData.length).put(textureData);

@@ -59,7 +59,7 @@ public class CountrySetting extends Setting<Country> {
 
     @Override
     protected boolean isValueValid(Country value) {
-        return value.code != null && ServerSeeker.COUNTRY_MAP.containsKey(value.code);
+        return value.code != null && ServerSeeker.COUNTRY_MAP.containsValue(value);
     }
 
     @Override
