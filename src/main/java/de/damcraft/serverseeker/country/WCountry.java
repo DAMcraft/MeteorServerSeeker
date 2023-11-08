@@ -4,13 +4,11 @@ import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.gui.renderer.GuiRenderer;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.renderer.Texture;
-import org.lwjgl.BufferUtils;
-
-import java.awt.image.BufferedImage;
 
 public class WCountry extends WWidget {
 
     private Country country;
+    private Country.CountryTextureData cache = null;
 
     public WCountry(Country country) {
         if (country == null) country = ServerSeeker.COUNTRY_MAP.get("UN");
@@ -31,18 +29,14 @@ public class WCountry extends WWidget {
 
     @Override
     protected void onRender(GuiRenderer renderer, double mouseX, double mouseY, double delta) {
-        if (country == null) {
-            country = ServerSeeker.COUNTRY_MAP.get("UN");
-        }
-        byte[] data = country.image;
-        BufferedImage bufferedImage = country.bufferedImage;
-
-        if (data == null || bufferedImage == null) {
-            return;
-        }
+        Country.CountryTextureData textureData;
+        if (this.cache == null) {
+            textureData = this.country.getTextureData();
+            if (textureData.isLoaded()) this.cache = textureData;
+        } else textureData = this.cache;
 
         Texture texture = new Texture();
-        texture.upload(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferUtils.createByteBuffer(data.length).put(data), Texture.Format.RGB, Texture.Filter.Nearest, Texture.Filter.Nearest, false);
+        texture.upload(textureData.width(), textureData.height(), textureData.getBuffer(), Texture.Format.RGB, Texture.Filter.Nearest, Texture.Filter.Nearest, false);
 
         texture.bind();
 
