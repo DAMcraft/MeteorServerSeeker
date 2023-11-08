@@ -59,8 +59,7 @@ public class CountrySetting extends Setting<Country> {
 
     @Override
     protected boolean isValueValid(Country value) {
-        if (value.name == null) return false;
-        return value.code != null;
+        return value.name == null || value.code == null;
     }
 
     @Override
