@@ -1,7 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
-import com.google.gson.Gson;
 import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.country.Country;
@@ -25,6 +24,8 @@ import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
 import java.util.List;
+
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class FindNewServersScreen extends WindowScreen {
     private int timer;
@@ -293,7 +294,6 @@ public class FindNewServersScreen extends WindowScreen {
 
             MeteorExecutor.execute(() -> {
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", request.json());
-                Gson gson = new Gson();
 
                 ServersResponse resp = gson.fromJson(jsonResp, ServersResponse.class);
 

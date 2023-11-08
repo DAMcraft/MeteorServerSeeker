@@ -1,7 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
-import com.google.gson.Gson;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.ssapi.requests.WhereisRequest;
 import de.damcraft.serverseeker.ssapi.responses.WhereisResponse;
@@ -25,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class FindPlayerScreen extends WindowScreen {
@@ -86,7 +86,6 @@ public class FindPlayerScreen extends WindowScreen {
 
             String jsonResponse = SmallHttp.post("https://api.serverseeker.net/whereis", request.json());
 
-            Gson gson = new Gson();
             WhereisResponse resp = gson.fromJson(jsonResponse, WhereisResponse.class);
 
             // Set error message if there is one
