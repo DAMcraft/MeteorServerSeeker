@@ -1,6 +1,5 @@
 package de.damcraft.serverseeker.country;
 
-import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.gui.renderer.GuiRenderer;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.renderer.Texture;
@@ -11,11 +10,11 @@ public class WCountry extends WWidget {
     private Country.CountryTextureData cache = null;
 
     public WCountry(Country country) {
-        this.country = country == null ? ServerSeeker.COUNTRY_MAP.get("UN") : country;
+        this.country = country;
     }
 
     public void set(Country country) {
-        this.country = country == null ? ServerSeeker.COUNTRY_MAP.get("UN") : country;
+        this.country = country;
     }
 
     @Override
