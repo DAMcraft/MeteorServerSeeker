@@ -1,11 +1,10 @@
 package de.damcraft.serverseeker;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
+import de.damcraft.serverseeker.ssapi.responses.UserInfoResponse;
 import meteordevelopment.meteorclient.systems.Systems;
 import net.minecraft.util.Util;
 import org.apache.http.NameValuePair;
@@ -17,6 +16,8 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class DiscordAuth {
     private static final int port = 7637;
@@ -108,8 +109,6 @@ public class DiscordAuth {
             String jsonResp = SmallHttp.post("https://api.serverseeker.net/get_token", params.toString());
 
             // {"api_key": "..."} or {"error": "..."}
-
-            Gson gson = new Gson();
 
             JsonObject obj = gson.fromJson(jsonResp, JsonObject.class);
 

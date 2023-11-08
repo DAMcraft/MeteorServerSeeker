@@ -2,11 +2,9 @@ package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.ssapi_responses.ServerInfoResponse;
+import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
+import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
@@ -23,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 public class ServerInfoScreen extends WindowScreen {
     private final String serverIp;
 
@@ -34,13 +33,11 @@ public class ServerInfoScreen extends WindowScreen {
     @Override
     public void initWidgets() {
         add(theme.label("Fetching server info..."));
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("api_key", ServerSeekerSystem.get().apiKey);
+        ServerInfoRequest request = new ServerInfoRequest();
         HostAndPort hap = HostAndPort.fromString(serverIp);
-        jsonObject.addProperty("ip", hap.getHost());
-        jsonObject.addProperty("port", hap.getPort());
-        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", jsonObject.toString());
+        request.setIpPort(hap.getHost(), hap.getPort());
+        String jsonRequest = new Gson().toJson(request.json());
+        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", jsonRequest);
         ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
         if (resp.isError()) {
             clear();
@@ -102,8 +99,6 @@ public class ServerInfoScreen extends WindowScreen {
 
         playersTable.add(theme.horizontalSeparator()).expandX();
         playersTable.row();
-
-        playersTable.add(theme.label(""));
 
         for (ServerInfoResponse.Player player : players) {
             String name = player.name;

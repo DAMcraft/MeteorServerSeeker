@@ -3,7 +3,7 @@ package de.damcraft.serverseeker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
+import de.damcraft.serverseeker.ssapi.responses.UserInfoResponse;
 import meteordevelopment.meteorclient.renderer.Texture;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.network.Http;

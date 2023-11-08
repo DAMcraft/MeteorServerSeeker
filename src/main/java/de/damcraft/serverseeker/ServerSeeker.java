@@ -1,5 +1,6 @@
 package de.damcraft.serverseeker;
 
+import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
 import de.damcraft.serverseeker.country.Countries;
 import de.damcraft.serverseeker.country.Country;
@@ -30,6 +31,8 @@ public class ServerSeeker extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category CATEGORY = new Category("ServerSeeker", Items.SPYGLASS.getDefaultStack());
     public static final Map<String, Country> COUNTRY_MAP = new HashMap<>();
+
+    public static final Gson gson = new Gson();
     @Override
     public void onInitialize() {
         LOG.info("Loaded the ServerSeeker addon!");
