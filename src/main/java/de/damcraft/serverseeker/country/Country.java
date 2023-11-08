@@ -3,6 +3,7 @@ package de.damcraft.serverseeker.country;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
@@ -17,7 +18,7 @@ import java.util.Locale;
 import static meteordevelopment.meteorclient.MeteorClient.LOG;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class Country {
+public class Country implements Comparable<Country> {
     public final Identifier identifier;
     public final String name;
     public final String code;
@@ -69,6 +70,11 @@ public class Country {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull Country o) {
+        return this.name.compareTo(o.name);
     }
 
     public record CountryTextureData(byte[] textureData, int width, int height) {
