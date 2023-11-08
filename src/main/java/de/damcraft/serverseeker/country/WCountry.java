@@ -27,10 +27,7 @@ public class WCountry extends WWidget {
     @Override
     protected void onRender(GuiRenderer renderer, double mouseX, double mouseY, double delta) {
         Texture texture = this.country.getTexture();
-
         if (texture == null) return;
-
-        texture.bind();
 
         int wanted_height = (int) (super.width * texture.height / texture.width);
 
