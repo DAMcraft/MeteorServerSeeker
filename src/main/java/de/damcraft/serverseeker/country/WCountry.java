@@ -11,12 +11,11 @@ public class WCountry extends WWidget {
     private Country.CountryTextureData cache = null;
 
     public WCountry(Country country) {
-        if (country == null) country = ServerSeeker.COUNTRY_MAP.get("UN");
-        this.country = country;
+        this.country = country == null ? ServerSeeker.COUNTRY_MAP.get("UN") : country;
     }
 
     public void set(Country country) {
-        this.country = country;
+        this.country = country == null ? ServerSeeker.COUNTRY_MAP.get("UN") : country;
     }
 
     @Override
