@@ -54,14 +54,12 @@ public class CountrySetting extends Setting<Country> {
 
     @Override
     protected Country parseImpl(String str) {
-        return null;
+        return ServerSeeker.COUNTRY_MAP.get(str);
     }
 
     @Override
     protected boolean isValueValid(Country value) {
-        if (value.name == null) return false;
-        if (value.code == null) return false;
-        return true;
+        return value.code != null && ServerSeeker.COUNTRY_MAP.containsKey(value.code);
     }
 
     @Override
