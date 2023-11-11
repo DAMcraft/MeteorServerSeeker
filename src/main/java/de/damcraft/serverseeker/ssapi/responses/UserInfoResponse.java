@@ -1,4 +1,4 @@
-package de.damcraft.serverseeker.ssapi_responses;
+package de.damcraft.serverseeker.ssapi.responses;
 
 public class UserInfoResponse {
     public String error;

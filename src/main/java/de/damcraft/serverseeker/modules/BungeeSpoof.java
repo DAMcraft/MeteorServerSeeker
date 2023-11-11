@@ -1,6 +1,5 @@
 package de.damcraft.serverseeker.modules;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.mixin.HandshakeC2SAccessor;
@@ -14,7 +13,7 @@ import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 
-
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 public class BungeeSpoof extends Module {
     SettingGroup sgGeneral = settings.getDefaultGroup();
 
@@ -46,8 +45,6 @@ public class BungeeSpoof extends Module {
             Http.Request request = Http.get(URL);
             String response = request.sendString();
             if (response != null) {
-                Gson gson = new Gson();
-
                 JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 
                 if (jsonObject != null && jsonObject.has("id")) {

@@ -1,9 +1,8 @@
 package de.damcraft.serverseeker;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
+import de.damcraft.serverseeker.ssapi.responses.UserInfoResponse;
 import meteordevelopment.meteorclient.renderer.Texture;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.network.Http;
@@ -14,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class DiscordAvatar extends Texture {
     public DiscordAvatar(String url) {
@@ -27,7 +28,7 @@ public class DiscordAvatar extends Texture {
 
                 String jsonResp = SmallHttp.post("https://api.serverseeker.net/user_info", params.toString());
 
-                UserInfoResponse userInfo = new Gson().fromJson(jsonResp, UserInfoResponse.class);
+                UserInfoResponse userInfo = gson.fromJson(jsonResp, UserInfoResponse.class);
                 if (userInfo.isError()) {
                     System.out.println("Error: " + userInfo.error);
                     return;

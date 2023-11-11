@@ -1,10 +1,9 @@
 package de.damcraft.serverseeker.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.ssapi_responses.ServerInfoResponse;
+import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
+import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
@@ -23,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class GetInfoScreen extends WindowScreen {
@@ -78,17 +78,12 @@ public class GetInfoScreen extends WindowScreen {
           "ip": "109.123.240.84", // The ip of the server
           "port": 25565  // The port of the server (defaults to 25565)
         } */
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("api_key", apiKey);
+        ServerInfoRequest request = new ServerInfoRequest();
 
-        jsonObject.addProperty("ip", ip);
-        jsonObject.addProperty("port", port);
+        request.setIpPort(ip, port);
 
-        String json = jsonObject.toString();
+        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", request.json());
 
-        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", json);
-
-        Gson gson = new Gson();
         ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
 
         // Set error message if there is one
@@ -97,6 +92,7 @@ public class GetInfoScreen extends WindowScreen {
             add(theme.label(resp.error)).expandX();
             return;
         }
+
         clear();
         List<ServerInfoResponse.Player> players = resp.players;
         if (players.size() == 0) {

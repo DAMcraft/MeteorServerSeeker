@@ -1,11 +1,9 @@
 package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.ssapi_responses.WhereisResponse;
+import de.damcraft.serverseeker.ssapi.requests.WhereisRequest;
+import de.damcraft.serverseeker.ssapi.responses.WhereisResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -13,7 +11,6 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.Systems;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -27,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class FindPlayerScreen extends WindowScreen {
@@ -78,23 +76,17 @@ public class FindPlayerScreen extends WindowScreen {
         this.settingsContainer = settingsContainer;
 
         add(theme.button("Find Player")).expandX().widget().action = () -> {
-            String apiKey = Systems.get(ServerSeekerSystem.class).apiKey;
 
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("api_key", apiKey);
+            WhereisRequest request = new WhereisRequest();
 
-            if (nameOrUUID.get() == NameOrUUID.Name) {
-                jsonObject.addProperty("name", name.get());
-            } else {
-                jsonObject.addProperty("uuid", uuid.get());
+            switch (nameOrUUID.get()) {
+                case Name -> request.setName(name.get());
+                case UUID -> request.setUuid(uuid.get());
             }
 
-            String json = jsonObject.toString();
+            String jsonResponse = SmallHttp.post("https://api.serverseeker.net/whereis", request.json());
 
-            String jsonResp = SmallHttp.post("https://api.serverseeker.net/whereis", json);
-
-            Gson gson = new Gson();
-            WhereisResponse resp = gson.fromJson(jsonResp, WhereisResponse.class);
+            WhereisResponse resp = gson.fromJson(jsonResponse, WhereisResponse.class);
 
             // Set error message if there is one
             if (resp.isError()) {

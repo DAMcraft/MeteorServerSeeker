@@ -1,10 +1,9 @@
 package de.damcraft.serverseeker.gui;
 
-import com.google.gson.Gson;
 import de.damcraft.serverseeker.DiscordAvatar;
 import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.ssapi_responses.UserInfoResponse;
+import de.damcraft.serverseeker.ssapi.responses.UserInfoResponse;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -14,6 +13,7 @@ import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 
+import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class ServerSeekerScreen extends WindowScreen {
     private final MultiplayerScreen multiplayerScreen;
@@ -59,7 +59,6 @@ public class ServerSeekerScreen extends WindowScreen {
         userInfoList.add(theme.label("Loading..."));
 
         new Thread(() -> {
-            Gson gson = new Gson();
             String reqBody = "{\"api_key\":\"" + authToken + "\"}";
             String userInfoJson = SmallHttp.post("https://api.serverseeker.net/user_info", reqBody);
             UserInfoResponse userInfo = gson.fromJson(userInfoJson, UserInfoResponse.class);
