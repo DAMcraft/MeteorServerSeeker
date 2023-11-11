@@ -7,6 +7,7 @@ import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.ssapi.requests.ServersRequest;
 import de.damcraft.serverseeker.ssapi.responses.ServersResponse;
+import de.damcraft.serverseeker.utils.MCVersionUtil;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -51,15 +52,36 @@ public class FindNewServersScreen extends WindowScreen {
     public enum Version {
         Current,
         Any,
-        Custom
+        Protocol,
+        VersionString;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case Current -> "Current";
+                case Any -> "Any";
+                case Protocol -> "Protocol";
+                case VersionString -> "Version String";
+            };
+        }
     }
 
     public enum NumRangeType {
         Any,
         Equals,
-        At_Least,
-        At_Most,
-        Between
+        AtLeast,
+        AtMost,
+        Between;
+        @Override
+        public String toString() {
+            return switch (this) {
+                case Any -> "Any";
+                case Equals -> "Equal To";
+                case AtLeast -> "At Least";
+                case AtMost -> "At Most";
+                case Between -> "Between";
+            };
+        }
     }
 
     // Didn't have a better name
@@ -81,14 +103,14 @@ public class FindNewServersScreen extends WindowScreen {
     );
 
     private final Setting<NumRangeType> onlinePlayersNumTypeSetting = sg.add(new EnumSetting.Builder<NumRangeType>()
-        .name("online-players")
+        .name("online-players-range")
         .description("The type of number range for the online players")
         .defaultValue(NumRangeType.Any)
         .build()
     );
 
     private final Setting<Integer> equalsOnlinePlayersSetting = sg.add(new IntSetting.Builder()
-            .name("online-player-equals")
+            .name("online-players")
             .description("The amount of online players the server should have")
             .defaultValue(2)
             .min(0)
@@ -99,35 +121,35 @@ public class FindNewServersScreen extends WindowScreen {
 
 
     private final Setting<Integer> atLeastOnlinePlayersSetting = sg.add(new IntSetting.Builder()
-        .name("online-player-at-least")
+        .name("minimum-online-players")
         .description("The minimum amount of online players the server should have")
         .defaultValue(1)
         .min(0)
-        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Least) || onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.AtLeast) || onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between))
         .noSlider()
         .build()
     );
 
     private final Setting<Integer> atMostOnlinePlayersSetting = sg.add(new IntSetting.Builder()
-        .name("online-player-at-most")
+        .name("maximum-online-players")
         .description("The maximum amount of online players the server should have")
         .defaultValue(20)
         .min(0)
-        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.At_Most) || onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .visible(() -> onlinePlayersNumTypeSetting.get().equals(NumRangeType.AtMost) || onlinePlayersNumTypeSetting.get().equals(NumRangeType.Between))
         .noSlider()
         .build()
     );
 
 
     private final Setting<NumRangeType> maxPlayersNumTypeSetting = sg.add(new EnumSetting.Builder<NumRangeType>()
-        .name("max-players")
+        .name("max-players-range")
         .description("The type of number range for the max players")
         .defaultValue(NumRangeType.Any)
         .build()
     );
 
     private final Setting<Integer> equalsMaxPlayersSetting = sg.add(new IntSetting.Builder()
-            .name("max-players-equals")
+            .name("max-players")
             .description("The amount of max players the server should have")
             .defaultValue(2)
             .min(0)
@@ -138,35 +160,35 @@ public class FindNewServersScreen extends WindowScreen {
 
 
     private final Setting<Integer> atLeastMaxPlayersSetting = sg.add(new IntSetting.Builder()
-        .name("max-players-at-least")
+        .name("minimum-max-players")
         .description("The minimum amount of max players the server should have")
         .defaultValue(1)
         .min(0)
-        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Least) || maxPlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.AtLeast) || maxPlayersNumTypeSetting.get().equals(NumRangeType.Between))
         .noSlider()
         .build()
     );
 
     private final Setting<Integer> atMostMaxPlayersSetting = sg.add(new IntSetting.Builder()
-        .name("max-players-at-most")
+        .name("maximum-max-players")
         .description("The maximum amount of max players the server should have")
         .defaultValue(20)
         .min(0)
-        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.At_Most) || maxPlayersNumTypeSetting.get().equals(NumRangeType.Between))
+        .visible(() -> maxPlayersNumTypeSetting.get().equals(NumRangeType.AtMost) || maxPlayersNumTypeSetting.get().equals(NumRangeType.Between))
         .noSlider()
         .build()
     );
 
     private final Setting<String> descriptionSetting = sg.add(new StringSetting.Builder()
-        .name("description")
-        .description("The description (aka motd) the servers should have (empty for any)")
+        .name("MOTD")
+        .description("What the MOTD of the server should contain (empty for any)")
         .defaultValue("")
         .build()
     );
 
     private final Setting<ServersRequest.Software> softwareSetting = sg.add(new EnumSetting.Builder<ServersRequest.Software>()
         .name("software")
-        .description("The software the servers should have")
+        .description("The server software the servers should have")
         .defaultValue(ServersRequest.Software.Any)
         .build()
     );
@@ -178,13 +200,21 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Integer> customProtocolSetting = sg.add(new IntSetting.Builder()
+    private final Setting<Integer> protocolVersionSetting = sg.add(new IntSetting.Builder()
         .name("protocol")
         .description("The protocol version the servers should have")
         .defaultValue(SharedConstants.getProtocolVersion())
-        .visible(() -> versionSetting.get() == Version.Custom)
+        .visible(() -> versionSetting.get() == Version.Protocol)
         .min(0)
         .noSlider()
+        .build()
+    );
+
+    private final Setting<String> versionStringSetting = sg.add(new StringSetting.Builder()
+        .name("version-string")
+        .description("The version string (e.g. 1.19.3) of the protocol version the server should have, results may contain different versions that have the same protocol version. Must be at least 1.7.1")
+        .defaultValue("1.20.2")
+        .visible(() -> versionSetting.get() == Version.VersionString)
         .build()
     );
 
@@ -238,10 +268,10 @@ public class FindNewServersScreen extends WindowScreen {
 
             switch (onlinePlayersNumTypeSetting.get()) {
                 // [n, "inf"]
-                case At_Least -> request.setOnlinePlayers(atLeastOnlinePlayersSetting.get(), -1);
+                case AtLeast -> request.setOnlinePlayers(atLeastOnlinePlayersSetting.get(), -1);
 
                 // [0, n]
-                case At_Most -> request.setOnlinePlayers(0, atMostOnlinePlayersSetting.get());
+                case AtMost -> request.setOnlinePlayers(0, atMostOnlinePlayersSetting.get());
 
                 // [min, max]
                 case Between -> request.setOnlinePlayers(atLeastOnlinePlayersSetting.get(), atMostOnlinePlayersSetting.get());
@@ -252,10 +282,10 @@ public class FindNewServersScreen extends WindowScreen {
 
             switch (maxPlayersNumTypeSetting.get()) {
                 // [n, "inf"]
-                case At_Least -> request.setMaxPlayers(atLeastMaxPlayersSetting.get(), -1);
+                case AtLeast -> request.setMaxPlayers(atLeastMaxPlayersSetting.get(), -1);
 
                 // [0, n]
-                case At_Most -> request.setMaxPlayers(0, atMostMaxPlayersSetting.get());
+                case AtMost -> request.setMaxPlayers(0, atMostMaxPlayersSetting.get());
 
                 // [min, max]
                 case Between -> request.setMaxPlayers(atLeastMaxPlayersSetting.get(), atMostMaxPlayersSetting.get());
@@ -278,7 +308,16 @@ public class FindNewServersScreen extends WindowScreen {
             request.setSoftware(softwareSetting.get());
 
             switch (versionSetting.get()) {
-                case Custom -> request.setProtocolVersion(customProtocolSetting.get());
+                case Protocol -> request.setProtocolVersion(protocolVersionSetting.get());
+                case VersionString -> {
+                   Integer protocol = MCVersionUtil.versionToProtocol(versionStringSetting.get());
+                   if (protocol == null) {
+                       clear();
+                       add(theme.label("Unknown version string"));
+                       return;
+                   }
+                   request.setProtocolVersion(protocol);
+                }
                 case Current -> request.setProtocolVersion(SharedConstants.getProtocolVersion());
             }
 
