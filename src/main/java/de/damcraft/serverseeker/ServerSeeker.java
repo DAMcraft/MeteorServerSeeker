@@ -6,6 +6,7 @@ import de.damcraft.serverseeker.country.Countries;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.modules.BungeeSpoof;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
@@ -15,7 +16,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ServerSeeker extends MeteorAddon {
@@ -30,15 +30,15 @@ public class ServerSeeker extends MeteorAddon {
      */
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category CATEGORY = new Category("ServerSeeker", Items.SPYGLASS.getDefaultStack());
-    public static final Map<String, Country> COUNTRY_MAP = new HashMap<>();
+    public static final Map<String, Country> COUNTRY_MAP = new Object2ReferenceOpenHashMap<>();
 
     public static final Gson gson = new Gson();
+  
     @Override
     public void onInitialize() {
         LOG.info("Loaded the ServerSeeker addon!");
 
         // Load countries
-        COUNTRY_MAP.put("UN", new Country("Any", "UN"));
         Countries.init();
 
         Modules.get().add( new BungeeSpoof() );
