@@ -42,7 +42,8 @@ public class ServerSeekerScreen extends WindowScreen {
 
         WHorizontalList accountList = add(theme.horizontalList()).expandX().widget();
         // Add an image of the user's avatar
-        if (!ServerSeekerSystem.get().discordAvatarUrl.isEmpty()) {
+        String avatarUrl = ServerSeekerSystem.get().discordAvatarUrl;
+        if (avatarUrl != null && !avatarUrl.isEmpty()) {
             accountList.add(theme.texture(32, 32, 0, new DiscordAvatar(ServerSeekerSystem.get().discordAvatarUrl + "?size=32")));
         }
         accountList.add(theme.label(ServerSeekerSystem.get().discordUsername)).expandX();
