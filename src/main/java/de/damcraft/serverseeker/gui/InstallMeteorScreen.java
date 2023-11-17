@@ -1,5 +1,6 @@
 package de.damcraft.serverseeker.gui;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.SmallHttp;
 import net.fabricmc.loader.api.FabricLoader;
@@ -17,8 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class InstallMeteorScreen extends Screen {
     public InstallMeteorScreen() {
@@ -56,6 +55,7 @@ public class InstallMeteorScreen extends Screen {
             return;
         }
 
+        Gson gson = new Gson();
         JsonObject json = gson.fromJson(result, JsonObject.class);
         String currentVersion = SharedConstants.getGameVersion().getName();
         String stableVersion = json.get("mc_version").getAsString();
