@@ -225,6 +225,13 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
+    private final Setting<Boolean> ignoreModded = sg.add(new BoolSetting.Builder()
+        .name("ignore-modded")
+        .description("Will not give you servers where mods have been detected")
+        .defaultValue(true)
+        .build()
+    );
+
     private final Setting<GeoSearchType> geoSearchTypeSetting = sg.add(new EnumSetting.Builder<GeoSearchType>()
         .name("geo-search-type")
         .description("Whether to search by ASN or country code")
@@ -322,6 +329,7 @@ public class FindNewServersScreen extends WindowScreen {
             }
 
             if (!onlineOnlySetting.get()) request.setOnlineAfter(0);
+            if (ignoreModded.get()) request.setIgnoreModded(true);
 
 
             this.locked = true;

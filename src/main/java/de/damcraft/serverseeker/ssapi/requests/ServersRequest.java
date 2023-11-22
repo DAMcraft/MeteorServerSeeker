@@ -15,6 +15,8 @@ public class ServersRequest {
     private Integer online_after;
     private JsonArray online_players;
     private Integer protocol;
+    private Boolean ignore_modded;
+
     public enum Software {
         Any,
         Bukkit,
@@ -84,6 +86,10 @@ public class ServersRequest {
 
     public void setSoftware(Software software) {
         this.software = software;
+    }
+
+    public void setIgnoreModded(Boolean ignore) {
+        this.ignore_modded = ignore;
     }
 
     public String json() {
