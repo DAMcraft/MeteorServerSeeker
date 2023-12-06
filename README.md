@@ -11,7 +11,7 @@
 
 <div align="center">
     <h3>Offical ServerSeeker discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
-    <a href="https://discord.gg/serverseeker-1087081486747971705">
+    <a href="https://discord.gg/jVyHyYbqdS">
     <img src="https://invidget.switchblade.xyz/serverseeker-1087081486747971705">
     </a>
 </div>  
