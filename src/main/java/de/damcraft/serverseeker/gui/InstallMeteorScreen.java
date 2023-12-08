@@ -77,7 +77,16 @@ public class InstallMeteorScreen extends Screen {
         Optional<String> filenameT = file.headers().firstValue("Content-Disposition");
         String filename = "meteor-client.jar";
         if (filenameT.isPresent()) {
-            filename = filenameT.get().split("filename=")[1];
+            String[] parts = filenameT.get().split("; ");
+            for (String part : parts) {
+                if (part.startsWith("filename=")) {
+                    filename = part.substring(9);
+                    break;
+                }
+            }
+            if (filename.startsWith("\"") && filename.endsWith("\"")) {
+                filename = filename.substring(1, filename.length() - 1);
+            }
         }
 
         // Get the mods folder
@@ -92,6 +101,7 @@ public class InstallMeteorScreen extends Screen {
             Files.copy(file.body(), modsFolder.resolve(filename));
         } catch (Exception e) {
             this.displayError("Failed to save Meteor! Please install it manually.");
+            e.printStackTrace();
             return;
         }
 

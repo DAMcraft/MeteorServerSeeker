@@ -45,13 +45,18 @@ public class SmallHttp {
 
     public static HttpResponse<InputStream> download(String url) {
         HttpClient client = HttpClient.newHttpClient();
+
         try {
-            return client.send(HttpRequest.newBuilder()
+            HttpResponse<InputStream> req = client.send(HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .GET()
                     .build(),
                 HttpResponse.BodyHandlers.ofInputStream()
             );
+            if (req.headers().firstValue("location").isPresent()) {
+                return download(req.headers().firstValue("location").get());
+            }
+            return req;
         }
         catch (IOException | InterruptedException e) {
             e.printStackTrace();
