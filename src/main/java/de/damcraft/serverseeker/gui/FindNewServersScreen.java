@@ -86,6 +86,7 @@ public class FindNewServersScreen extends WindowScreen {
 
     // Didn't have a better name
     public enum GeoSearchType {
+        None,
         ASN,
         Country
     }
