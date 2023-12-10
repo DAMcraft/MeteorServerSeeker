@@ -3,8 +3,10 @@ package de.damcraft.serverseeker.utils;
 import java.util.HashMap;
 
 public class MCVersionUtil {
-    private static HashMap<String, Integer> versions = new HashMap<>() {
+    private static final HashMap<String, Integer> versions = new HashMap<>() {
         {
+            put("1.20.4", 765);
+            put("1.20.3", 765);
             put("1.20.2", 764);
             put("1.20.1", 763);
             put("1.20",   763);

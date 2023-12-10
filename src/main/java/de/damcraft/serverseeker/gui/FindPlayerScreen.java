@@ -12,8 +12,8 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
@@ -97,7 +97,7 @@ public class FindPlayerScreen extends WindowScreen {
             clear();
 
             List<WhereisResponse.Record> data = resp.data;
-            if (data.size() == 0) {
+            if (data.isEmpty()) {
                 clear();
                 add(theme.label("Not found")).expandX();
                 return;
