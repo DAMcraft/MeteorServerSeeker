@@ -45,12 +45,13 @@ def main():
                 changes_message += f'- [`{sha[:7]}`](https://github.com/DAMcraft/MeteorServerSeeker/{sha}) {message}\n'
 
         # Delete old release
-        requests.delete(
+        del_req = requests.delete(
             f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/latest",
             headers={
                 "Authorization": f"Bearer {GITHUB_TOKEN}"
             }
         )
+        print(del_req.text)
 
         # New release
         req = requests.post(
