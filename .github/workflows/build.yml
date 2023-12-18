@@ -27,8 +27,8 @@ jobs:
       - name: Pretty Result
         id: pretty_result
         run: |
-          echo "virus_total_link=$(${{ steps.virustotal_step.outputs.analysis }} | cut -d ',' -f 1 | cut -d '=' -f 2)" >> $GITHUB_OUTPUT
-          echo "short_sha=$(${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "virus_total_link=$(echo ${{ steps.virustotal_step.outputs.analysis }} | cut -d ',' -f 1 | cut -d 'jar=' -f 2)" >> $GITHUB_OUTPUT
+          echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Build Changelog
         id: github_release
