@@ -4,7 +4,7 @@ import requests
 import os
 
 GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
-VIRUSTOTAL_API_KEY = os.environ.get('VT_API_KEY')
+VIRUSTOTAL_API_KEY = os.environ.get('VIRUSTOTAL_API_KEY')
 DISCORD_WEBHOOK = os.environ.get('DISCORD_WEBHOOK')
 LAST_COMMIT = os.environ.get('LAST_COMMIT')
 NEW_COMMIT = os.environ.get('NEW_COMMIT')
