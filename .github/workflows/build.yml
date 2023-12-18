@@ -44,7 +44,7 @@ jobs:
                  "exhaustive": false
                }
              ],
-             "template": "#{{CHANGELOG}}\n",
+             "template": "#{{CHANGELOG}}\nVirusTotal Analysis: ${{steps.virustotal_result.outputs.virus_total_link}}",
             }
 
       - name: Release
@@ -53,13 +53,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: latest
           prerelease: true
           release_name: Dev Build
           draft: false
           body: |
             ${{ steps.github_release.outputs.changelog }}
-            VirusTotal Result: ${{ steps.virustotal_result.outputs.virus_total_link }}
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
