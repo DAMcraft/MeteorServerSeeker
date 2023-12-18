@@ -27,7 +27,7 @@ jobs:
       - name: Pretty Result
         id: pretty_result
         run: |
-          echo "virus_total_link=$(echo ${{ steps.virustotal_step.outputs.analysis }} | cut -d ',' -f 1 | cut -d 'jar=' -f 2)" >> $GITHUB_OUTPUT
+          echo "virus_total_link=$(echo ${{ steps.virustotal_step.outputs.analysis }} | cut -d ',' -f 1 | cut -d '=' -f 2-)" >> $GITHUB_OUTPUT
           echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
           echo "file=$(ls build/libs/*.jar | head -n 1)" >> $GITHUB_OUTPUT
           echo "file_name=$(ls build/libs/*.jar | head -n 1 | xargs -n 1 basename)" >> $GITHUB_OUTPUT
