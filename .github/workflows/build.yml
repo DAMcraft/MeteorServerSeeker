@@ -47,6 +47,6 @@ jobs:
           tag_name: latest
           prerelease: true
           draft: false
-          body: "${{ steps.github_release.outputs.changelog }}\n VirusTotal: ${{ steps.pretty_result.outputs.virus_total_link }}"
+          body: "${{ steps.github_release.outputs.changelog }}\n VirusTotal analysis: ${{ steps.pretty_result.outputs.virus_total_link }}"
           files: |
             ${{ steps.pretty_result.outputs.file }}
