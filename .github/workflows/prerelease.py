@@ -46,10 +46,9 @@ def main():
 
         # Delete old release
         requests.delete(
-            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/tags/latest",
+            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/latest",
             headers={
-                "Authorization": f"Bearer {GITHUB_TOKEN}",
-                "Accept": "application/vnd.github.v3+json"
+                "Authorization": f"Bearer {GITHUB_TOKEN}"
             }
         )
 
