@@ -42,7 +42,16 @@ def main():
                 sha = commit['sha']
                 message = commit['commit']['message']
                 changes[sha] = message
-                changes_message += f'- `[{sha[:7]}](https://github.com/DAMcraft/MeteorServerSeeker/{sha})` {message}\n'
+                changes_message += f'- [`{sha[:7]}`](https://github.com/DAMcraft/MeteorServerSeeker/{sha}) {message}\n'
+
+        # Delete old release
+        requests.delete(
+            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/tags/latest",
+            headers={
+                "Authorization": f"Bearer {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github.v3+json"
+            }
+        )
 
         # New release
         req = requests.post(
