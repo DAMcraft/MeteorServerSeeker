@@ -19,6 +19,7 @@ jobs:
 
       - name: Run python script
         run: |
+          pip3 install -r ./.github/workflows/requirements.txt
           python3 ./.github/workflows/prerelease.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
