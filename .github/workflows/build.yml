@@ -22,12 +22,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           request_rate: 4
           files: |
-            ./build/libs/*.jar$
+            ./build/libs/*.jar
 
-      - name: VirusTotal Result
-        id: virustotal_result
+      - name: Pretty Result
+        id: pretty_result
         run: |
           echo "virus_total_link=${{ steps.virustotal_step.outputs.analysis }} | cut -d ',' -f 1 | cut -d '=' -f 2" >> $GITHUB_OUTPUT
+          echo "short_sha=${{ github.sha }} | cut -c1-7" >> $GITHUB_OUTPUT
 
       - name: Build Changelog
         id: github_release
@@ -44,7 +45,7 @@ jobs:
                  "exhaustive": false
                }
              ],
-             "template": "#{{CHANGELOG}}\nVirusTotal Analysis: ${{steps.virustotal_result.outputs.virus_total_link}}",
+             "template": "#{{CHANGELOG}}\nVirusTotal Analysis: ${{steps.pretty_result.outputs.virus_total_link}}",
             }
 
       - name: Release
@@ -53,7 +54,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
+          tag_name: ${{ steps.pretty_result.outputs.short_sha }}
           prerelease: true
           release_name: Dev Build
           draft: false
