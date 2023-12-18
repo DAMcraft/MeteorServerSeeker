@@ -57,10 +57,9 @@ def main():
                 "body": changes_message,
                 "draft": False,
                 "prerelease": True,
-                "make_latest": True
+                "make_latest": 'true'
             }
         )
-        print(req.json())
 
     if DISCORD_WEBHOOK is not None:
         requests.post(
