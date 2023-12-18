@@ -1,0 +1,28 @@
+name: Publish Development Build
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: adopt
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.1
+
+      - name: Build
+        run: ./gradlew build -Pgithub_sha=${{ github.sha }}
+
+      - name: Run python script
+        run: |
+          python3 ./.github/workflows/prerelease.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VIRUSTOTAL_API_KEY: ${{ secrets.VT_API_KEY }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          LAST_COMMIT: ${{ github.event.before }}
+          NEW_COMMIT: ${{ github.event.after }}
