@@ -44,8 +44,7 @@ jobs:
                  "exhaustive": false
                }
              ],
-             "template": "${{CHANGELOG}}\n",
-             "pr_template": "- #${{NUMBER}} ${{TITLE}}"
+             "template": "#{{CHANGELOG}}\n",
             }
 
       - name: Release
