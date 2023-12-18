@@ -10,14 +10,62 @@ jobs:
         with:
           java-version: 17
           distribution: adopt
+
       - name: Build
         run: ./gradlew build -Pgithub_sha=${{ github.sha }}
-      - name: Release
-        uses: marvinpinto/action-automatic-releases@latest
+
+      - name: VirusTotal
+        id: virustotal_step
+        uses: crazy-max/ghaction-virustotal@v4
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          prerelease: true
-          automatic_release_tag: latest
-          title: Dev Build
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          request_rate: 4
           files: |
-            ./build/libs/*.jar
+            ./build/libs/*.jar$
+
+      - name: VirusTotal Result
+        id: virustotal_result
+        run: |
+          echo "virus_total_link=${{ steps.virustotal_step.outputs.analysis }} | cut -d ',' -f 1 | cut -d '=' -f 2" >> $GITHUB_OUTPUT
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          configurationJson: |
+            {
+             "categories": [
+               {
+                 "title": "## Changes",
+                 "labels": [],
+                 "exhaustive": false
+               }
+             ],
+             "template": "${{CHANGELOG}}\n",
+             "pr_template": "- #${{NUMBER}} ${{TITLE}}"
+            }
+
+      - name: Release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: latest
+          prerelease: true
+          release_name: Dev Build
+          draft: false
+          body: |
+            ${{ steps.github_release.outputs.changelog }}
+            VirusTotal Result: ${{ steps.virustotal_result.outputs.virus_total_link }}
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          asset_path: ./build/libs/*.jar
+          asset_content_type: application/java-archive
+          upload_url: ${{ steps.release.outputs.upload_url }}
