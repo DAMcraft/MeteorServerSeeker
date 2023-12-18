@@ -60,6 +60,7 @@ def main():
                 "make_latest": 'true'
             }
         )
+        print(req.json())
 
     if DISCORD_WEBHOOK is not None:
         requests.post(
