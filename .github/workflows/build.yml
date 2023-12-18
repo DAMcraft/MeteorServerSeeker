@@ -37,37 +37,16 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          configurationJson: |
-            {
-             "categories": [
-               {
-                 "title": "## Changes",
-                 "labels": [],
-                 "exhaustive": false
-               }
-             ],
-             "template": "#{{CHANGELOG}}\nVirusTotal Analysis: ${{steps.pretty_result.outputs.virus_total_link}}",
-            }
 
       - name: Release
         id: release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.pretty_result.outputs.short_sha }}
+          tag_name: latest
           prerelease: true
-          release_name: Dev Build ${{ steps.pretty_result.outputs.short_sha }}
           draft: false
-          body: |
-            ${{ steps.github_release.outputs.changelog }}
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          asset_path: ${{ steps.pretty_result.outputs.file }}
-          asset_content_type: application/java-archive
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_name: ${{ steps.pretty_result.outputs.file_name }}
+          body: "${{ steps.github_release.outputs.changelog }}\n VirusTotal: ${{ steps.pretty_result.outputs.virus_total_link }}"
+          files: |
+            ${{ steps.pretty_result.outputs.file }}
