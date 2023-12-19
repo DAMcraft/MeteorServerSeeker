@@ -13,7 +13,7 @@ NEW_COMMIT = os.environ.get('NEW_COMMIT')
 def main():
     directory = os.listdir('./build/libs')
     jar = [file for file in directory if file.endswith('.jar')][0]
-    version = "".join(jar.split('-')[1].split('.')[:-1])
+    version = jar.split('-')[2].split('.jar')[0]
 
     virus_total_link = None
     if VIRUSTOTAL_API_KEY is not None:
