@@ -56,7 +56,7 @@ def main():
             old_release = get_tags.json()
             release_id = old_release['id']
             del_req = requests.delete(
-                f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/latest",
+                f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/{release_id}",
                 headers={
                     "Authorization": f"Bearer {GITHUB_TOKEN}"
                 }
@@ -80,6 +80,18 @@ def main():
             }
         )
         print(req.json())
+        release_id = req.json()['id']
+
+        # Upload jar
+        upload_req = requests.post(
+            f"https://uploads.github.com/repos/DAMcraft/MeteorServerSeeker/releases/{release_id}/assets?name={jar}",
+            headers={
+                'Authorization': f'Bearer {GITHUB_TOKEN}',
+                'Content-Type': 'application/jar'
+            },
+            data=open(f'./build/libs/{jar}', 'rb')
+        )
+        print(upload_req.json())
 
     if DISCORD_WEBHOOK is not None:
         requests.post(
