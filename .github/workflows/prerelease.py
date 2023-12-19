@@ -46,7 +46,7 @@ def main():
 
         # Delete old release
         del_req = requests.delete(
-            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/dev-build",
+            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/latest",
             headers={
                 "Authorization": f"Bearer {GITHUB_TOKEN}"
             }
@@ -60,10 +60,10 @@ def main():
                 'Authorization': f'Bearer {GITHUB_TOKEN}'
             },
             json={
-                "tag_name": f"dev-build",
+                "tag_name": f"latest",
                 "target_commitish": f"{NEW_COMMIT}",
                 "name": f"Dev Build",
-                "body": changes_message,
+                "body": changes_message + f"\nVirusTotal: {virus_total_link}",
                 "draft": False,
                 "prerelease": True,
                 "make_latest": 'true'
