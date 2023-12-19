@@ -61,7 +61,6 @@ def main():
                     "Authorization": f"Bearer {GITHUB_TOKEN}"
                 }
             )
-            print(del_req.text)
 
         # New release
         req = requests.post(
@@ -79,7 +78,6 @@ def main():
                 "make_latest": 'true'
             }
         )
-        print(req.json())
         release_id = req.json()['id']
 
         # Upload jar
@@ -91,7 +89,6 @@ def main():
             },
             data=open(f'./build/libs/{jar}', 'rb')
         )
-        print(upload_req.json())
 
     if DISCORD_WEBHOOK is not None:
         requests.post(
