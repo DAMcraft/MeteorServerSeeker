@@ -13,6 +13,7 @@ NEW_COMMIT = os.environ.get('NEW_COMMIT')
 def main():
     directory = os.listdir('./build/libs')
     jar = [file for file in directory if file.endswith('.jar')][0]
+    version = "".join(jar.split('-')[1].split('.')[:-1])
 
     virus_total_link = None
     if VIRUSTOTAL_API_KEY is not None:
@@ -29,7 +30,7 @@ def main():
             virus_total_link = f'https://www.virustotal.com/gui/file-analysis/{virus_total_id}/detection'
 
     changes = {}
-    changes_message = 'Changes:\n'
+    changes_message = '**Changes:**\n'
     if GITHUB_TOKEN is not None:
         github_req = requests.get(
             f'https://api.github.com/repos/DAMcraft/MeteorServerSeeker/compare/{LAST_COMMIT}...{NEW_COMMIT}',
@@ -45,13 +46,22 @@ def main():
                 changes_message += f'- [`{sha[:7]}`](https://github.com/DAMcraft/MeteorServerSeeker/{sha}) {message}\n'
 
         # Delete old release
-        del_req = requests.delete(
-            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/latest",
+        get_tags = requests.get(
+            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/tags/latest",
             headers={
                 "Authorization": f"Bearer {GITHUB_TOKEN}"
-            }
+            },
         )
-        print(del_req.text)
+        if get_tags.status_code == 200:
+            old_release = get_tags.json()
+            release_id = old_release['id']
+            del_req = requests.delete(
+                f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/latest",
+                headers={
+                    "Authorization": f"Bearer {GITHUB_TOKEN}"
+                }
+            )
+            print(del_req.text)
 
         # New release
         req = requests.post(
@@ -62,7 +72,7 @@ def main():
             json={
                 "tag_name": f"latest",
                 "target_commitish": f"{NEW_COMMIT}",
-                "name": f"Dev Build",
+                "name": f"Dev Build (Based on {version})",
                 "body": changes_message + f"\nVirusTotal: {virus_total_link}",
                 "draft": False,
                 "prerelease": True,
@@ -80,7 +90,7 @@ def main():
                     'embeds': [
                         {
                             'title': "New Dev Build!",
-                            'description': f'A new dev build has been released!\n'
+                            'description': f'A new dev build based on {version} has been released!\n'
                                            f'[VirusTotal]({virus_total_link})\n'
                                            f'{changes_message}',
                             'color': 0x14c384
@@ -89,11 +99,6 @@ def main():
                 }))
             }
         )
-
-
-
-
-
 
 
 if __name__ == '__main__':
