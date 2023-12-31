@@ -43,7 +43,7 @@ def main():
                 sha = commit['sha']
                 message = commit['commit']['message']
                 changes[sha] = message
-                changes_message += (f'- [`{sha[:7]}`](https://github.com/DAMcraft/MeteorServerSeeker/{sha}/commit) '
+                changes_message += (f'- [`{sha[:7]}`](https://github.com/DAMcraft/MeteorServerSeeker/commit/{sha}/) '
                                     f'{message}\n')
 
         # Delete old release
