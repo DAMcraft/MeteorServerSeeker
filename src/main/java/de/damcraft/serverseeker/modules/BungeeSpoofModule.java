@@ -19,6 +19,5 @@ public class BungeeSpoofModule extends Module {
 
     public BungeeSpoofModule() {
         super(ServerSeeker.CATEGORY, "BungeeSpoof", "Allows you to join servers with an exposed bungeecord backend. ONLY ENABLE THIS IF YOU ACTUALLY WANT TO JOIN A BUNGEESPOOFABLE SERVER!");
-        this.runInMainMenu = true;
     }
 }
