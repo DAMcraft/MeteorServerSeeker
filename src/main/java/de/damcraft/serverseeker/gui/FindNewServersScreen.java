@@ -232,6 +232,13 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
+    private final Setting<Boolean> onlyBungeeSpoofable = sg.add(new BoolSetting.Builder()
+        .name("only-bungee-spoofable")
+        .description("Will only give you servers where you can use BungeeSpoof")
+        .defaultValue(false)
+        .build()
+    );
+
     private final Setting<GeoSearchType> geoSearchTypeSetting = sg.add(new EnumSetting.Builder<GeoSearchType>()
         .name("geo-search-type")
         .description("Whether to search by ASN or country code")
@@ -330,6 +337,7 @@ public class FindNewServersScreen extends WindowScreen {
 
             if (!onlineOnlySetting.get()) request.setOnlineAfter(0);
             if (ignoreModded.get()) request.setIgnoreModded(true);
+            if (onlyBungeeSpoofable.get()) request.setOnlyBungeeSpoofable(true);
 
 
             this.locked = true;

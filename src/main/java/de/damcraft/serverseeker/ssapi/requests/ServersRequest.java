@@ -16,6 +16,7 @@ public class ServersRequest {
     private JsonArray online_players;
     private Integer protocol;
     private Boolean ignore_modded;
+    private Boolean only_bungeespoofable;
 
     public enum Software {
         Any,
@@ -90,6 +91,10 @@ public class ServersRequest {
 
     public void setIgnoreModded(Boolean ignore) {
         this.ignore_modded = ignore;
+    }
+
+    public void setOnlyBungeeSpoofable(Boolean only) {
+        this.only_bungeespoofable = only;
     }
 
     public String json() {

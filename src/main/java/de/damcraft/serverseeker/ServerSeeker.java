@@ -5,7 +5,7 @@ import com.mojang.logging.LogUtils;
 import de.damcraft.serverseeker.country.Countries;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
-import de.damcraft.serverseeker.modules.BungeeSpoof;
+import de.damcraft.serverseeker.modules.BungeeSpoofModule;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -33,7 +33,7 @@ public class ServerSeeker extends MeteorAddon {
     public static final Map<String, Country> COUNTRY_MAP = new Object2ReferenceOpenHashMap<>();
 
     public static final Gson gson = new Gson();
-  
+
     @Override
     public void onInitialize() {
         LOG.info("Loaded the ServerSeeker addon!");
@@ -41,7 +41,7 @@ public class ServerSeeker extends MeteorAddon {
         // Load countries
         Countries.init();
 
-        Modules.get().add( new BungeeSpoof() );
+        Modules.get().add( new BungeeSpoofModule() );
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
             CountrySetting.countrySettingW(table, (CountrySetting) setting, theme);
         });
