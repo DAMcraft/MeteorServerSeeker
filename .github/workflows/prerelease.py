@@ -31,6 +31,7 @@ def main():
 
     changes = {}
     changes_message = '**Changes:**\n'
+    html_url = None
     if GITHUB_TOKEN is not None:
         github_req = requests.get(
             f'https://api.github.com/repos/DAMcraft/MeteorServerSeeker/compare/{LAST_COMMIT}...{NEW_COMMIT}',
@@ -80,9 +81,10 @@ def main():
             }
         )
         release_id = req.json()['id']
+        html_url = req.json()['html_url']
 
         # Upload jar
-        upload_req = requests.post(
+        requests.post(
             f"https://uploads.github.com/repos/DAMcraft/MeteorServerSeeker/releases/{release_id}/assets?name={jar}",
             headers={
                 'Authorization': f'Bearer {GITHUB_TOKEN}',
@@ -102,7 +104,8 @@ def main():
                             'title': "New Dev Build!",
                             'description': f'A new dev build based on {version} has been released!\n'
                                            f'[VirusTotal]({virus_total_link})\n'
-                                           f'{changes_message}',
+                                           f'{changes_message}\n'
+                                           f'[View on GitHub]({html_url})',
                             'color': 0x14c384
                         }
                     ]
