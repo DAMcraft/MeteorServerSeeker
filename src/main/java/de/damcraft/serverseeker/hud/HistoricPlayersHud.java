@@ -96,7 +96,7 @@ public class HistoricPlayersHud extends HudElement {
 
         String playersText = "Players:";
         double playerOffset = alignX(renderer.textWidth(playersText), alignment.get());
-        renderer.text(playersText, x + playerOffset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), false);
+        renderer.text(playersText, x + playerOffset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), true);
         double longestLine = renderer.textWidth(playersText);
 
         line++;
@@ -110,7 +110,7 @@ public class HistoricPlayersHud extends HudElement {
                 alreadyDisplayed.add(String.valueOf(player.getProfile().getId()));
                 String name = player.getProfile().getName();
                 double offset = alignX(renderer.textWidth(name), alignment.get());
-                renderer.text(name, x + offset, y + line * renderer.textHeight(), currentPlayersColor.get(), false);
+                renderer.text(name, x + offset, y + line * renderer.textHeight(), currentPlayersColor.get(), true);
                 line++;
 
                 if (renderer.textWidth(name) > longestLine) longestLine = renderer.textWidth(name);
@@ -154,8 +154,8 @@ public class HistoricPlayersHud extends HudElement {
             double width = renderer.textWidth(player.name) + renderer.textWidth(" (" + last_seen + unit + ")");
             double offset = alignX(width, alignment.get());
 
-            renderer.text(player.name, x + offset, y + line * renderer.textHeight(), historicPlayersColor.get(), false);
-            renderer.text(" (" + last_seen + unit + ")", x + offset + renderer.textWidth(player.name), y + line * renderer.textHeight(), historicPlayersLastSeenColor.get(), false);
+            renderer.text(player.name, x + offset, y + line * renderer.textHeight(), historicPlayersColor.get(), true);
+            renderer.text(" (" + last_seen + unit + ")", x + offset + renderer.textWidth(player.name), y + line * renderer.textHeight(), historicPlayersLastSeenColor.get(), true);
             line++;
 
             if (width > longestLine) longestLine = width;
@@ -164,7 +164,7 @@ public class HistoricPlayersHud extends HudElement {
         if (line == 1) {
             String text = "No players found.";
             double offset = alignX(renderer.textWidth(text), alignment.get());
-            renderer.text(text, x + offset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), false);
+            renderer.text(text, x + offset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), true);
             line++;
             if (renderer.textWidth(text) > longestLine) longestLine = renderer.textWidth("No players found.");
         }
@@ -172,7 +172,7 @@ public class HistoricPlayersHud extends HudElement {
         if (more > 0) {
             String text = "... and " + more + " more";
             double offset = alignX(renderer.textWidth(text), alignment.get());
-            renderer.text(text, x + offset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), false);
+            renderer.text(text, x + offset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), true);
             line++;
             if (renderer.textWidth(text) > longestLine) longestLine = renderer.textWidth(text);
         }
@@ -180,7 +180,7 @@ public class HistoricPlayersHud extends HudElement {
         if (showCrackedText.get() && isCracked) {
             String text = "Server is cracked";
             double offset = alignX(renderer.textWidth(text), alignment.get());
-            renderer.text(text, x + offset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), false);
+            renderer.text(text, x + offset, y + line * renderer.textHeight(), GuiThemes.get().textColor(), true);
             line++;
             if (renderer.textWidth(text) > longestLine) longestLine = renderer.textWidth(text);
         }
