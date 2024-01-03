@@ -9,9 +9,9 @@ import net.minecraft.command.CommandSource;
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class ServerSeekerCommand extends Command {
-    public ServerSeekerCommand() {
-        super("serverseeker", "ServerSeeker-related commands", "ss");
+public class ServerInfoCommand extends Command {
+    public ServerInfoCommand() {
+        super("server_info", "Get Info about a server", "si");
     }
 
     @Override
@@ -24,7 +24,6 @@ public class ServerSeekerCommand extends Command {
                     return SINGLE_SUCCESS;
                 }
                 String addr = mc.getCurrentServerEntry().address;
-                System.out.println(addr);
                 Utils.screenToOpen = new ServerInfoScreen(addr);
                 return SINGLE_SUCCESS;
             }));
