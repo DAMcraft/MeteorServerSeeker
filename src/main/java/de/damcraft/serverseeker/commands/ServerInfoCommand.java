@@ -16,16 +16,14 @@ public class ServerInfoCommand extends Command {
 
     @Override
     public void build(LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(
-            // Get information about the current server
-            literal("server_info").executes(ctx -> {
-                if (mc.getCurrentServerEntry() == null) {
-                    error("Failed to get current server entry. Are you playing on a singleplayer world?");
-                    return SINGLE_SUCCESS;
-                }
-                String addr = mc.getCurrentServerEntry().address;
-                Utils.screenToOpen = new ServerInfoScreen(addr);
+        builder.executes(ctx -> {
+            if (mc.getCurrentServerEntry() == null) {
+                error("Failed to get current server entry. Are you playing on a singleplayer world?");
                 return SINGLE_SUCCESS;
-            }));
+            }
+            String addr = mc.getCurrentServerEntry().address;
+            Utils.screenToOpen = new ServerInfoScreen(addr);
+            return SINGLE_SUCCESS;
+        });
     }
 }
