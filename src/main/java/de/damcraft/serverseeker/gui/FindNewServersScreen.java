@@ -23,12 +23,14 @@ import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.nbt.NbtCompound;
 
 import java.util.List;
 
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class FindNewServersScreen extends WindowScreen {
+    public static NbtCompound savedSettings;
     private int timer;
     public WButton findButton;
     private boolean threadHasFinished;
@@ -274,8 +276,11 @@ public class FindNewServersScreen extends WindowScreen {
 
     @Override
     public void initWidgets() {
+        loadSettings();
+        onClosed(this::saveSettings);
         settingsContainer = add(theme.verticalList()).widget();
         settingsContainer.add(theme.settings(settings));
+        add(theme.button("Reset all")).expandX().widget().action = this::resetSettings;
         findButton = add(theme.button("Find")).expandX().widget();
         findButton.action = () -> {
             ServersRequest request = new ServersRequest();
@@ -485,5 +490,22 @@ public class FindNewServersScreen extends WindowScreen {
         }
 
         this.locked = false;
+    }
+
+    public void saveSettings() {
+        savedSettings = sg.toTag();
+    }
+
+    public void loadSettings() {
+        if (savedSettings == null) return;
+        sg.fromTag(savedSettings);
+    }
+
+    public void resetSettings() {
+        for (Setting<?> setting : sg) {
+            setting.reset();
+        }
+        saveSettings();
+        reload();
     }
 }

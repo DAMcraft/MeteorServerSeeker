@@ -64,12 +64,13 @@ public class CountrySetting extends Setting<Country> {
 
     @Override
     protected NbtCompound save(NbtCompound tag) {
-        return null;
+        tag.putString("value", get().code);
+        return tag;
     }
 
     @Override
     protected Country load(NbtCompound tag) {
-        return null;
+        return ServerSeeker.COUNTRY_MAP.get(tag.getString("value"));
     }
 
     public static class Builder extends SettingBuilder<Builder, Country, CountrySetting> {
