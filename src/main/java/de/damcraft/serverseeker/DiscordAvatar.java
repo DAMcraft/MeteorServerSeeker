@@ -35,7 +35,7 @@ public class DiscordAvatar extends Texture {
                 }
                 String discordId = userInfo.discord_id;
                 String discordUsername = userInfo.discord_username;
-                String discordAvatarUrl = userInfo.discord_avatar_url;
+                String discordAvatarUrl = userInfo.discord_avatar_url == null ? "" : userInfo.discord_avatar_url;
 
                 Systems.get(ServerSeekerSystem.class).discordId = discordId;
                 Systems.get(ServerSeekerSystem.class).discordUsername = discordUsername;
