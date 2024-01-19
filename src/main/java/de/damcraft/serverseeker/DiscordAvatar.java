@@ -43,6 +43,10 @@ public class DiscordAvatar extends Texture {
 
                 stream = Http.get(discordAvatarUrl).sendInputStream();
             }
+            if (stream == null) {
+                System.err.println("Failed to get avatar, are you Vero?");
+                return;
+            }
             avatar = ImageIO.read(stream);
         } catch (IOException e) {
             e.printStackTrace();
