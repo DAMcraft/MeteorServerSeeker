@@ -9,18 +9,19 @@ import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
-import meteordevelopment.meteorclient.systems.accounts.Account;
-import meteordevelopment.meteorclient.systems.accounts.Accounts;
-import meteordevelopment.meteorclient.systems.accounts.types.CrackedAccount;
+import meteordevelopment.meteorclient.mixin.MinecraftClientAccessor;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.session.Session;
+import net.minecraft.util.Uuids;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Optional;
 
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -95,7 +96,7 @@ public class GetInfoScreen extends WindowScreen {
 
         clear();
         List<ServerInfoResponse.Player> players = resp.players;
-        if (players.size() == 0) {
+        if (players.isEmpty()) {
             clear();
             add(theme.label("No records of players found.")).expandX();
             return;
@@ -152,20 +153,7 @@ public class GetInfoScreen extends WindowScreen {
                 loginButton.action = () -> {
                     loginButton.visible = false;
                     if (this.client == null) return;
-                    // Check if the account already exists
-                    boolean exists = false;
-                    for (Account<?> account : Accounts.get()) {
-                        if (account instanceof CrackedAccount && account.getUsername().equals(name)) {
-                            account.login();
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        CrackedAccount account = new CrackedAccount(name);
-                        account.login();
-                        Accounts.get().add(account);
-                    }
+                    ((MinecraftClientAccessor) mc).setSession(new Session(name, Uuids.getOfflinePlayerUuid(name), "", Optional.empty(), Optional.empty(), Session.AccountType.MOJANG));
                     close();
                 };
             }
