@@ -35,13 +35,17 @@ public class DiscordAvatar extends Texture {
                 }
                 String discordId = userInfo.discord_id;
                 String discordUsername = userInfo.discord_username;
-                String discordAvatarUrl = userInfo.discord_avatar_url;
+                String discordAvatarUrl = userInfo.discord_avatar_url == null ? "" : userInfo.discord_avatar_url;
 
                 Systems.get(ServerSeekerSystem.class).discordId = discordId;
                 Systems.get(ServerSeekerSystem.class).discordUsername = discordUsername;
                 Systems.get(ServerSeekerSystem.class).discordAvatarUrl = discordAvatarUrl;
 
                 stream = Http.get(discordAvatarUrl).sendInputStream();
+            }
+            if (stream == null) {
+                System.err.println("Failed to get avatar, are you Vero?");
+                return;
             }
             avatar = ImageIO.read(stream);
         } catch (IOException e) {
