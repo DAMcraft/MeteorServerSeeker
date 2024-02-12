@@ -12,6 +12,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -52,7 +53,7 @@ public class HistoricPlayersUpdater {
         ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
 
         for (HistoricPlayersHud hud : huds) {
-            hud.players = resp.players;
+            hud.players = Objects.requireNonNullElseGet(resp.players, List::of);
             hud.isCracked = resp.cracked;
         }
     }
