@@ -54,7 +54,7 @@ public class HistoricPlayersUpdater {
 
         for (HistoricPlayersHud hud : huds) {
             hud.players = Objects.requireNonNullElseGet(resp.players, List::of);
-            hud.isCracked = resp.cracked;
+            hud.isCracked = resp.cracked != null && resp.cracked;
         }
     }
 }
