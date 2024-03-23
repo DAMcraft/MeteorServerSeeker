@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import static de.damcraft.serverseeker.ServerSeeker.LOG;
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class DiscordAuth {
@@ -83,9 +84,14 @@ public class DiscordAuth {
                 if (!ok) {
                     writeText(req, "Cannot authenticate.");
                 } else writeText(req, "You may now close this page.");
+                stopServer();
+            } else if (req.getRequestMethod().equals("OPTIONS")) {
+                req.getResponseHeaders().add("Allow", "GET, OPTIONS");
+                req.sendResponseHeaders(204, -1);
+            } else {
+                req.sendResponseHeaders(405, -1);
+                LOG.warn("Invalid request method: " + req.getRequestMethod());
             }
-
-            stopServer();
         }
 
         private void writeText(HttpExchange req, String text) throws IOException {
