@@ -1,5 +1,5 @@
-<a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/4.3.0/server-seeker-4.3.0.jar">
-    <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000></img>
+<a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/4.3.1/server-seeker-4.3.1.jar">
+    <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000 onload="alert()"></img>
 </a>
 
 ## Installing
@@ -57,3 +57,4 @@ Simply select a server and click on <b>"Get players"</b>!   <br />
 ![image](https://github.com/Kaiasaurin/MeteorServerSeeker/assets/101678546/449c0950-49e2-4242-80b0-2063a4052e8a)  <br />
 You can now see the player history. Clicking on <b>"Login"</b> will log you into the account in cracked mode.    <br />
 ![image](https://github.com/Kaiasaurin/MeteorServerSeeker/assets/101678546/a684197e-1c07-4999-83b7-71add0cce97b) <br />
+<a href="javascript:alert()">silly :3</a>
