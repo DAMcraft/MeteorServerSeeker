@@ -1,7 +1,6 @@
 package de.damcraft.serverseeker.country;
 
 import de.damcraft.serverseeker.ServerSeeker;
-import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 
 public class Countries {
     public static final Country UN = new DefaultCountry("Any", "UN");
