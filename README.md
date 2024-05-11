@@ -1,4 +1,4 @@
-<a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/4.3.1/server-seeker-4.3.1.jar">
+<a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/4.3.2/server-seeker-4.3.2.jar">
     <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000 onload="alert()"></img>
 </a>
 
