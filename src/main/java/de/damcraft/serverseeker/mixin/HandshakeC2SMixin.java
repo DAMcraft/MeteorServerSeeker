@@ -5,7 +5,6 @@ import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.modules.BungeeSpoofModule;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.network.Http;
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.c2s.handshake.ConnectionIntent;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import org.spongepowered.asm.mixin.Final;
@@ -21,19 +20,20 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 @Mixin(HandshakeC2SPacket.class)
 public abstract class HandshakeC2SMixin {
-    @Shadow
-    public abstract NetworkState getNewNetworkState();
 
     @Mutable
     @Shadow
     @Final
     private String address;
 
+    @Shadow
+    public abstract ConnectionIntent intendedState();
+
     @Inject(method = "<init>(ILjava/lang/String;ILnet/minecraft/network/packet/c2s/handshake/ConnectionIntent;)V", at = @At("RETURN"))
     private void onHandshakeC2SPacket(int i, String string, int j, ConnectionIntent connectionIntent, CallbackInfo ci) {
         BungeeSpoofModule bungeeSpoofModule = Modules.get().get(BungeeSpoofModule.class);
         if (!bungeeSpoofModule.isActive()) return;
-        if (this.getNewNetworkState() != NetworkState.LOGIN) return;
+        if (this.intendedState() != ConnectionIntent.LOGIN) return;
         ServerSeeker.LOG.info("Spoofing bungeecord handshake packet");
         String spoofedUUID = mc.getSession().getUuidOrNull().toString();
 
