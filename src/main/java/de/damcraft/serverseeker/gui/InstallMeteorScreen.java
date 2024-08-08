@@ -12,12 +12,14 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import static de.damcraft.serverseeker.ServerSeeker.LOG;
 
 public class InstallMeteorScreen extends Screen {
     public InstallMeteorScreen() {
@@ -99,9 +101,9 @@ public class InstallMeteorScreen extends Screen {
         // Save the file
         try {
             Files.copy(file.body(), modsFolder.resolve(filename));
-        } catch (Exception e) {
+        } catch (IOException | SecurityException | InvalidPathException e) {
             this.displayError("Failed to save Meteor! Please install it manually.");
-            e.printStackTrace();
+            LOG.error(e.toString());
             return;
         }
 

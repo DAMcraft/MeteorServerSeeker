@@ -9,7 +9,6 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import net.minecraft.client.network.PlayerListEntry;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -118,7 +117,7 @@ public class HistoricPlayersHud extends HudElement {
         }
         // Sort players by join time (newest first)
         List<ServerInfoResponse.Player> players = new ArrayList<>(this.players);
-        Collections.sort(players, (b, a) -> a.last_seen.compareTo(b.last_seen));
+        players.sort((b, a) -> a.last_seen.compareTo(b.last_seen));
         for (ServerInfoResponse.Player player : players) {
             if (alreadyDisplayed.contains(player.uuid)) continue;
             if (line >= limit.get()) {

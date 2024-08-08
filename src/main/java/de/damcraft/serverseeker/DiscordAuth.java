@@ -49,8 +49,8 @@ public class DiscordAuth {
             server.bind(new InetSocketAddress("127.0.0.1", port), 0);
             server.createContext("/", new AuthHandler());
             server.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error(e.toString());
         }
     }
 
@@ -90,7 +90,7 @@ public class DiscordAuth {
                 req.sendResponseHeaders(204, -1);
             } else {
                 req.sendResponseHeaders(405, -1);
-                LOG.warn("Invalid request method: " + req.getRequestMethod());
+                LOG.warn("Invalid request method: {}", req.getRequestMethod());
             }
         }
 

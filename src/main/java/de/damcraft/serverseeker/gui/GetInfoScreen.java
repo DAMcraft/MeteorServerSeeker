@@ -95,7 +95,7 @@ public class GetInfoScreen extends WindowScreen {
 
         clear();
         List<ServerInfoResponse.Player> players = resp.players;
-        if (players.size() == 0) {
+        if (players.isEmpty()) {
             clear();
             add(theme.label("No records of players found.")).expandX();
             return;

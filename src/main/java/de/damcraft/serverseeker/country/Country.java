@@ -25,9 +25,9 @@ public class Country implements Comparable<Country> {
     public Country(String name, String code) {
         this.name = name;
         this.code = code.toLowerCase(Locale.ENGLISH);
-        this.identifier = new Identifier("serverseeker", "textures/flags/" + this.code + ".png");
+        this.identifier = Identifier.of("serverseeker", String.format("textures/flags/%s.png", this.code));
         if (mc.getResourceManager().getResource(this.identifier).isEmpty()) {
-            LOG.error("Could not find flag for country: " + this.code);
+            LOG.error("Could not find flag for country: {}", this.code);
             this.textureData = new EmptyTextureData();
         } else this.textureData = new CountryTextureData();
     }

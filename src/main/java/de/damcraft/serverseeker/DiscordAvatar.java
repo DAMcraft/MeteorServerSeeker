@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import static de.damcraft.serverseeker.ServerSeeker.LOG;
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class DiscordAvatar extends Texture {
@@ -49,7 +50,7 @@ public class DiscordAvatar extends Texture {
             }
             avatar = ImageIO.read(stream);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.toString());
             return;
         }
 

@@ -1,5 +1,5 @@
 <a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/4.3.2/server-seeker-4.3.2.jar">
-    <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000 onload="alert()"></img>
+    <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000 onload="alert()">
 </a>
 
 ## Installing
@@ -10,7 +10,7 @@
 <h1 align="center"> Official ServerSeeker addon for meteor </h1>
 
 <div align="center">
-    <h3>Offical ServerSeeker discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
+    <h3>Official ServerSeeker discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
     <a href="https://discord.gg/jVyHyYbqdS">
     <img src="https://invidget.switchblade.xyz/serverseeker-1087081486747971705">
     </a>
