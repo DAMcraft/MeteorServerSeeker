@@ -2,6 +2,7 @@ package de.damcraft.serverseeker.gui;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
 import de.damcraft.serverseeker.SmallHttp;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
@@ -18,8 +19,6 @@ import java.net.http.HttpResponse;
 import java.nio.file.*;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import static de.damcraft.serverseeker.ServerSeeker.LOG;
 
 public class InstallMeteorScreen extends Screen {
     public InstallMeteorScreen() {
@@ -103,7 +102,7 @@ public class InstallMeteorScreen extends Screen {
             Files.copy(file.body(), modsFolder.resolve(filename));
         } catch (IOException | SecurityException | InvalidPathException e) {
             this.displayError("Failed to save Meteor! Please install it manually.");
-            LOG.error(e.toString());
+            LogUtils.getLogger().error(e.toString());   // we can't import without causing errors (no meteor)
             return;
         }
 
