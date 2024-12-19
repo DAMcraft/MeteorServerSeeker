@@ -21,6 +21,8 @@ import java.time.format.FormatStyle;
 import java.util.List;
 
 import static de.damcraft.serverseeker.ServerSeeker.gson;
+import static meteordevelopment.meteorclient.MeteorClient.mc;
+
 public class ServerInfoScreen extends WindowScreen {
     private final String serverIp;
 
@@ -108,6 +110,7 @@ public class ServerInfoScreen extends WindowScreen {
             playersTable.add(theme.label(lastSeenFormatted + " ")).expandX();
             playersTable.row();
         }
+        if (mc.player != null) return;
         WButton joinServerButton = add(theme.button("Join this Server")).expandX().widget();
         joinServerButton.action = ()
             -> ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false, null);

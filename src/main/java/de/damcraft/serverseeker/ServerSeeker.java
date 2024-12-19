@@ -2,6 +2,7 @@ package de.damcraft.serverseeker;
 
 import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
+import de.damcraft.serverseeker.commands.ServerInfoCommand;
 import de.damcraft.serverseeker.country.Countries;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
@@ -12,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.modules.Category;
@@ -47,6 +49,7 @@ public class ServerSeeker extends MeteorAddon {
 
         Modules.get().add( new BungeeSpoofModule() );
         Hud.get().register(HistoricPlayersHud.INFO);
+        Commands.add( new ServerInfoCommand() );
 
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
             CountrySetting.countrySettingW(table, (CountrySetting) setting, theme);
